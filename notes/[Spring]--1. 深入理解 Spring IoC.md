@@ -2,9 +2,25 @@
 
 #### 目录
 
-* [1. ](#1)
+* [1. IoC理论](#1)
+* [2. 依赖对象注入](#2)
+    * [2.1 构造器注入](#2.1)
+    
+    * [2.2 setter方法注入](#2.2)
+    
+    * [2.3 接口方式注入](#2.3)
+* [3. 体系结构详解](#3)
+    * [3.1 Resource体系](#3.1)
+        * [3.1.1  ResourceLoader 体系](#3.1.1)
+    * [3.2 BeanDefinition体系](#3.2)
+    * [3.3 BeanDefinitionReader体系](#3.3)
+    * [3.4 BeanFactory体系](#3.4)
+    * [3.5 ApplicationContext体系](#3.5)
+* [4. 总结](#4)
 
 ****
+
+<span id="1"></span>
 
 # 1. IoC理论
 
@@ -70,6 +86,7 @@ public class YoungMan {
 3. **为什么是反转**：没有 `IoC` 的时候我们都是在**自己对象中主动去创建被依赖的对象，这是正转**。但是有了 `IoC` 后，所依赖的对象直接由 `IoC` 容器创建后注入到被注入的对象中，**依赖的对象由原来的主动获取变成被动接受，所以是反转**。
 4. **哪些方面反转了**：所依赖对象的获取被反转了。
 
+<span id="2"></span>
 # 2. 依赖对象注入
 
 &nbsp;&nbsp; 妹子有了，但是如何拥有妹子呢？这也是一门学问。
@@ -80,6 +97,7 @@ public class YoungMan {
 
 &nbsp;&nbsp; `IOC Service Provider` 为被注入对象提供被依赖对象也有如下几种方式：**构造方法注入、setter方法注入、接口注入**。
 
+<span id="2.1"></span>
 ## 2.1 构造器注入
 
 &nbsp;&nbsp; **构造器注入**，顾名思义就是**被注入的对象通过在其构造方法中声明依赖对象的参数列表，让外部知道它需要哪些依赖对象**。
@@ -92,6 +110,7 @@ YoungMan(BeautifulGirl beautifulGirl){
 
 &nbsp;&nbsp; 构造器注入方式比较直观，对象构造完毕后就可以直接使用，这就好比你出生你家里就给你指定了你媳妇。
 
+<span id="2.2"></span>
 ## 2.2 setter方法注入
 
 &nbsp;&nbsp; 对于 `JavaBean` 对象而言，我们一般都是通过 `getter` 和 `setter` 方法来**访问和设置对象的属性**。所以，当前对象只需要为其所依赖的对象提供相对应的 `setter` 方法，就可以通过该方法将相应的依赖对象设置到被注入对象中。
@@ -108,6 +127,93 @@ public class YoungMan {
 
 &nbsp;&nbsp; 相比于**构造器注入**，**setter 方法注入**会显得比较宽松灵活些，它可以在任何时候进行注入（当然是在使用依赖对象之前），这就好比你可以先把自己想要的妹子想好了，然后再跟婚介公司打招呼，你可以要林志玲款式的，赵丽颖款式的，甚至凤姐哪款的，随意性较强。
 
+<span id="2.3"></span>
 ## 2.3 接口方式注入
 
 &nbsp;&nbsp; **接口方式注入**显得比较霸道，因为它需要**被依赖的对象实现不必要的接口**，带有**侵入性**。一般都不推荐这种方式。
+
+<span id="3"></span>
+
+# 3. 体系结构详解
+
+&nbsp;&nbsp;  下图为 `ClassPathXmlApplicationContext` 的类继承体系结构，虽然只有一部分，但是它基本上包含了 `IoC` 体系中大部分的核心类和接口。 
+
+.<center>![ClassPathXmlApplicationContext 类体系结构](./source/ClassPathXmlApplicationContext 类体系结构.png)</center>
+
+&nbsp;&nbsp;  上图左边黄色部分是 `ApplicationContext` 体系继承结构，右边是 `BeanFactory` 的结构体系,两个结构是典型模板方法设计模式的使用。 
+
+&nbsp;&nbsp; 从该继承体系可以看出： 
+
+1.  **`BeanFactory` 是一个 `bean` 工厂的最基本定义**，里面包含了一个 `bean` 工厂的几个最基本的方法， **getBean(…) 、 containsBean(…)** 等 ,是一个很纯粹的`bean`工厂，不关注**资源、资源位置、事件**等。 **`ApplicationContext` 是一个容器的最基本接口定义**，它继承了 `BeanFactory`, 拥有工厂的基本方法。同时继承了 `ApplicationEventPublisher` 、 `MessageSource` 、 `ResourcePatternResolver` 等接口，使其 定义了一些额外的功能，如**资源、事件**等这些额外的功能。 
+
+2.  `AbstractBeanFactory` 和 `AbstractAutowireCapableBeanFactory` 是两个模板抽象工厂类。 `AbstractBeanFactory` 提供了 `bean` 工厂的抽象基类，同时提供了 `ConfigurableBeanFactory` 的完整实现。 `AbstractAutowireCapableBeanFactory` 是继承了 `AbstractBeanFactory` 的抽象工厂，里面提供了 `bean` 创建的支持，包括 **`bean` 的创建、依赖注入、检查**等等功能，是一个核心的 `bean` 工厂基类。 
+
+3.  `ClassPathXmlApplicationContext`之所以拥有 `bean` 工厂的功能是通过持有一个真正的 `bean` 工厂 `DefaultListableBeanFactory` 的实例，并通过 **代理该工厂**完成。
+
+4.  `ClassPathXmlApplicationContext` 的初始化过程是对本身容器的初始化同时也是对其持有的 `DefaultListableBeanFactory` 的初始化。
+
+   &nbsp;&nbsp; 上图可拆分为以下几个体系:
+
+   1.  **`Resource`体系  ： 对资源的抽象 **
+   2.  **`Beandefinition` 体系  ： 抽象和描述一个具体`bean`对象。是描述一个`bean`对象的基本数据结构 **
+   3.  **`BeandefinitionReader`体系  ： 将外部资源对象描述的`bean`定义统一转化为统一的内部数据结构`BeanDefinition` ** 
+   4.  **`BeanFactory` 体系  ：  定义一个纯粹的 `bean` 容器，它是 `IoC`容器必备的数据结构 **
+   5.  **`ApplicationContext`体系  ： 继承 `BeanFactory`，它是 `BeanFactory` 的扩展升级版 ** 
+   
+
+<span id="3.1"></span>
+
+## 3.1 Resource体系
+
+&nbsp;&nbsp;  `Resource(org.springframework.core.io.Resource)`，对资源的抽象，它的每一个实现类都代表了一种资源的访问策略，如`ClasspathResource` 、 `URLResource` ，`FileSystemResource` 等。 每一个资源类型都封装了对某一种特定资源的访问策略。它是`Spring`资源访问策略的一个基础实现 。
+
+.<center>![Spring Resource结构](./source/Spring Resource 结构.png)</center>
+
+<span id="3.1.1"></span>
+### 3.1.1  ResourceLoader 体系
+
+&nbsp;&nbsp;  有了资源，就应该有资源加载，`Spring` 利用 `ResourceLoader(org.springframework.core.io.ResourceLoader)`来进行统一资源加载，类图如下
+
+.<center>![Spring ResourceLoader结构](./source/Spring ResourceLoader 结构.png)</center>
+
+<span id="3.2"></span>
+## 3.2 BeanDefinition体系
+
+&nbsp;&nbsp;  `BeanDefinition(org.springframework.beans.factory.config.BeanDefinition)` 用来描述 `Spring` 中的 `Bean` 对象，是描述一个`bean`对象的基本数据结构 。
+
+.<center>![Spring Beandefinition](./source/Spring Beandefinition  结构.png)</center>
+
+<span id="3.3"></span>
+## 3.3 BeanDefinitionReader体系
+
+&nbsp;&nbsp;  `BeanDefinitionReader(org.springframework.beans.factory.support.BeanDefinitionReader)` 的作用是读取 `Spring` 的配置文件的内容，并将其转换成` Ioc` 容器内部的数据结构：`BeanDefinition`。 
+
+&nbsp;&nbsp; 不同的描述需要有不同的`Reade`r。如`XmlBeanDefinitionReader`用来读取`xml`描述配置的`bean`对象。  
+
+.<center>![Spring BeandefinitionReader 结构](./source/Spring BeandefinitionReader 结构.png)</center>
+
+<span id="3.4"></span>
+## 3.4 BeanFactory体系
+
+ &nbsp;&nbsp; `BeanFactory(org.springframework.beans.factory.BeanFactory)` 是一个非常纯粹的 `bean` 容器，它是 `IoC` 必备的数据结构，其中 `BeanDefinition` 是它的基本结构，它内部维护着一个 **BeanDefinition map** ，并可根据 `BeanDefinition` 的描述进行 `bean` 的**创建和管理**。 
+
+&nbsp;&nbsp;  `BeanFacoty` 有三个直接子类 `ListableBeanFactory`、`HierarchicalBeanFactory` 和 `AutowireCapableBeanFactory`
+
+&nbsp;&nbsp; ``DefaultListableBeanFactory` 为最终默认实现，它实现了所有接口。 
+
+.<center>![Spring BeanFactory 结构](./source/Spring BeanFactory 结构.png)</center>
+
+<span id="3.5"></span>
+## 3.5 ApplicationContext体系
+
+&nbsp;&nbsp; `ApplicationContext(org.springframework.context.ApplicationContext)` ，这个就是大名鼎鼎的 `Spring` 容器，它叫做应用上下文，与我们应用息息相关。它继承 `BeanFactory` ，所以它是 `BeanFactory` 的扩展升级版，如果`BeanFactory` 是屌丝的话，那么 `ApplicationContext` 则是名副其实的高富帅。由于 `ApplicationContext` 的结构就决定了它与 `BeanFactory` 的不同，其主要区别有：
+
+1. 继承 `org.springframework.context.MessageSource` 接口，提供国际化的标准访问策略。
+2. 继承 `org.springframework.context.ApplicationEventPublisher` 接口，提供强大的**事件**机制。
+3. 扩展 `ResourceLoader` ，可以用来加载多种 `Resource` ，可以灵活访问不同的资源。
+4. 对 Web 应用的支持。
+
+<span id="4"></span>
+# 4. 总结
+
+&nbsp;&nbsp; 上面五个体系可以说是 `Spring IoC` 中最核心的部分，代表了`Ioc`容器的一个最基本组成，而组件的组合是放在`ApplicationContext`的实现这一层来完成。
