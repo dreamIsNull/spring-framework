@@ -29,7 +29,7 @@ import java.nio.channels.WritableByteChannel;
  * @since 3.1
  * @see java.io.OutputStream
  */
-public interface WritableResource extends Resource {
+public interface WritableResource {
 
 	/**
 	 * Indicate whether the contents of this resource can be written
