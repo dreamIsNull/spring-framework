@@ -1,4 +1,4 @@
-> 参考网址:< http://cmsblogs.com/?p=2652 >
+> 参考网址:<http://cmsblogs.com/?p=2652>
 
 #### 目录
 
@@ -75,7 +75,7 @@ public class YoungMan {
 
 &nbsp;&nbsp; 诚然，作为婚介公司的`IoC` 帮我们省略了找女朋友的繁杂过程，将原来的主动寻找变成了现在的被动接受（符合我们的要求），更加简洁轻便。你想啊，原来你还得鞍马前后，各种巴结，什么东西都需要自己去亲力亲为，现在好了，直接有人把现成的送过来，多么美妙的事情啊。所以，简单点说，**IoC 的理念就是让别人为你服务**，如下图：
 
-.<center>![IoC理念](\source\IoC理念.png)</center>
+.<center>![IoC理念](source\IoC理念.png)</center>
 
 &nbsp;&nbsp; 在没有引入 `IoC` 的时候，**被注入的对象直接依赖于被依赖的对象**，有了 `IoC` 后，**两者及其他们的关系都是通过 Ioc Service Provider 来统一管理维护的**。被注入的对象需要什么，直接跟 `IoC Service Provider` 打声招呼，后者就会把相应的被依赖对象注入到被注入的对象中，从而达到 `IOC Service Provider` 为被注入对象服务的目的。所以 IoC 就是这么简单！原来是需要什么东西自己去拿，现在是需要什么东西让别人（`IOC Service Provider`）送过来。
 
@@ -103,8 +103,10 @@ public class YoungMan {
 &nbsp;&nbsp; **构造器注入**，顾名思义就是**被注入的对象通过在其构造方法中声明依赖对象的参数列表，让外部知道它需要哪些依赖对象**。
 
 ```java
-YoungMan(BeautifulGirl beautifulGirl){
-        this.beautifulGirl = beautifulGirl;
+public class YoungMan {
+    public YoungMan(BeautifulGirl beautifulGirl){
+            this.beautifulGirl = beautifulGirl;
+    }
 }
 ```
 
@@ -138,7 +140,7 @@ public class YoungMan {
 
 &nbsp;&nbsp;  下图为 `ClassPathXmlApplicationContext` 的类继承体系结构，虽然只有一部分，但是它基本上包含了 `IoC` 体系中大部分的核心类和接口。 
 
-.<center>![ClassPathXmlApplicationContext 类体系结构](/source/ClassPathXmlApplicationContext 类体系结构.png)</center>
+.<center>![ClassPathXmlApplicationContext 类体系结构](source/ClassPathXmlApplicationContext 类体系结构.png)</center>
 
 &nbsp;&nbsp;  上图左边黄色部分是 `ApplicationContext` 体系继承结构，右边是 `BeanFactory` 的结构体系,两个结构是典型模板方法设计模式的使用。 
 
@@ -154,11 +156,11 @@ public class YoungMan {
 
    &nbsp;&nbsp; 上图可拆分为以下几个体系:
 
-   1.  **`Resource`体系  ： 对资源的抽象 **
-   2.  **`Beandefinition` 体系  ： 抽象和描述一个具体`bean`对象。是描述一个`bean`对象的基本数据结构 **
-   3.  **`BeandefinitionReader`体系  ： 将外部资源对象描述的`bean`定义统一转化为统一的内部数据结构`BeanDefinition` ** 
-   4.  **`BeanFactory` 体系  ：  定义一个纯粹的 `bean` 容器，它是 `IoC`容器必备的数据结构 **
-   5.  **`ApplicationContext`体系  ： 继承 `BeanFactory`，它是 `BeanFactory` 的扩展升级版 ** 
+   1.  **`Resource`体系  ： 对资源的抽象**
+   2.  **`Beandefinition` 体系  ： 抽象和描述一个具体`bean`对象。是描述一个`bean`对象的基本数据结构**
+   3.  **`BeandefinitionReader`体系  ： 将外部资源对象描述的`bean`定义统一转化为统一的内部数据结构`BeanDefinition`** 
+   4.  **`BeanFactory` 体系  ：  定义一个纯粹的 `bean` 容器，它是 `IoC`容器必备的数据结构**
+   5.  **`ApplicationContext`体系  ： 继承 `BeanFactory`，它是 `BeanFactory` 的扩展升级版** 
    
 
 <span id="3.1"></span>
@@ -167,22 +169,22 @@ public class YoungMan {
 
 &nbsp;&nbsp;  `Resource(org.springframework.core.io.Resource)`，对资源的抽象，它的每一个实现类都代表了一种资源的访问策略，如`ClasspathResource` 、 `URLResource` ，`FileSystemResource` 等。 每一个资源类型都封装了对某一种特定资源的访问策略，由`AbstractResource` 提供默认实现。它是`Spring`资源访问策略的一个基础实现  。
 
-.<center>![Spring Resource结构](/source/Spring Resource 结构.png)</center>
+.<center>![Spring Resource结构](source/Spring Resource 结构.png)</center>
 
 <span id="3.1.1"></span>
 
 ### 3.1.1  ResourceLoader 体系
 
-&nbsp;&nbsp;  有了资源，就应该有资源加载，`Spring` 利用 `ResourceLoader(org.springframework.core.io.ResourceLoader)`来进行统一资源加载，由`DefaultResourceLoader`提供默认实现，类图如下
+&nbsp;&nbsp;  资源有了，就应该有资源加载，`Spring` 利用 `ResourceLoader(org.springframework.core.io.ResourceLoader)`来进行统一资源加载，由`DefaultResourceLoader`提供默认实现，类图如下
 
-.<center>![Spring ResourceLoader结构](/source/Spring ResourceLoader 结构.png)</center>
+.<center>![Spring ResourceLoader结构](source/Spring ResourceLoader 结构.png)</center>
 
 <span id="3.2"></span>
 ## 3.2 BeanDefinition体系
 
 &nbsp;&nbsp;  `BeanDefinition(org.springframework.beans.factory.config.BeanDefinition)` 用来描述 `Spring` 中的 `Bean` 对象，是描述一个`bean`对象的基本数据结构 。由`AbstractBeanDefinition`提供默认实现。
 
-.<center>![Spring Beandefinition](/source/Spring Beandefinition  结构.png)</center>
+.<center>![Spring Beandefinition](source/Spring Beandefinition  结构.png)</center>
 
 <span id="3.3"></span>
 ## 3.3 BeanDefinitionReader体系
@@ -191,7 +193,7 @@ public class YoungMan {
 
 &nbsp;&nbsp; 不同的描述需要有不同的`Reader`。如`XmlBeanDefinitionReader`用来读取`xml`描述配置的`bean`对象。由`AbstractBeanDefinitionReader`提供默认实现。  
 
-.<center>![Spring BeandefinitionReader 结构](/source/Spring BeandefinitionReader 结构.png)</center>
+.<center>![Spring BeandefinitionReader 结构](source/Spring BeandefinitionReader 结构.png)</center>
 
 <span id="3.4"></span>
 ## 3.4 BeanFactory体系
@@ -202,7 +204,7 @@ public class YoungMan {
 
 &nbsp;&nbsp; `DefaultListableBeanFactory` 为最终默认实现，它实现了所有接口。 
 
-.<center>![Spring BeanFactory 结构](/source/Spring BeanFactory 结构.png)</center>
+.<center>![Spring BeanFactory 结构](source/Spring BeanFactory 结构.png)</center>
 
 <span id="3.5"></span>
 ## 3.5 ApplicationContext体系
@@ -214,7 +216,7 @@ public class YoungMan {
 3. 扩展 `ResourceLoader` ，可以用来加载多种 `Resource` ，可以灵活访问不同的资源。
 4. 对 Web 应用的支持。
 
-.<center>![ClassPathXmlApplicationContext 类体系结构](/source/ClassPathXmlApplicationContext 类体系结构.png)</center>
+.<center>![ClassPathXmlApplicationContext 类体系结构](source/ClassPathXmlApplicationContext 类体系结构.png)</center>
 
 <span id="4"></span>
 # 4. 总结
