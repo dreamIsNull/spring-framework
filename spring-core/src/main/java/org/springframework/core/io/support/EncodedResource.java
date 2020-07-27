@@ -128,14 +128,10 @@ public class EncodedResource implements InputStreamSource {
 	}
 
 	/**
-	 * Open a {@code java.io.Reader} for the specified resource, using the specified
-	 * {@link #getCharset() Charset} or {@linkplain #getEncoding() encoding}
-	 * (if any).
-	 * @throws IOException if opening the Reader failed
-	 * @see #requiresReader()
-	 * @see #getInputStream()
+	 * 获取编码后的流文件
 	 */
 	public Reader getReader() throws IOException {
+		// 如果指定了编码，则构建指定编码的流文件
 		if (this.charset != null) {
 			return new InputStreamReader(this.resource.getInputStream(), this.charset);
 		}
