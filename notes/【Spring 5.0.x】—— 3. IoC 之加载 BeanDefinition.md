@@ -118,6 +118,7 @@ public int loadBeanDefinitions(EncodedResource encodedResource) throws BeanDefin
 		// <2> 从 EncodedResource 获取封装的 Resource ，并从 Resource 中获取其中的 InputStream
 		InputStream inputStream = encodedResource.getResource().getInputStream();
 		try {
+            // InputSource这个类不是来自Spring,它的全路径是org.xml.sax.InputSource
 			InputSource inputSource = new InputSource(inputStream);
 			if (encodedResource.getEncoding() != null) {
 				// 设置编码
@@ -127,6 +128,7 @@ public int loadBeanDefinitions(EncodedResource encodedResource) throws BeanDefin
 			return doLoadBeanDefinitions(inputSource, encodedResource.getResource());
 		}
 		finally {
+            // 关闭输入流
 			inputStream.close();
 		}
 	}

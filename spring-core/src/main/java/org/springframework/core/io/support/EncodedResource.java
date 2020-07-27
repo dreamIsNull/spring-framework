@@ -128,10 +128,10 @@ public class EncodedResource implements InputStreamSource {
 	}
 
 	/**
-	 * »ñÈ¡±àÂëºóµÄÁ÷ÎÄ¼ş
+	 * è·å–ç¼–ç åçš„æµæ–‡ä»¶
 	 */
 	public Reader getReader() throws IOException {
-		// Èç¹ûÖ¸¶¨ÁË±àÂë£¬Ôò¹¹½¨Ö¸¶¨±àÂëµÄÁ÷ÎÄ¼ş
+		// å¦‚æœæŒ‡å®šäº†ç¼–ç ï¼Œåˆ™æ„å»ºæŒ‡å®šç¼–ç çš„æµæ–‡ä»¶
 		if (this.charset != null) {
 			return new InputStreamReader(this.resource.getInputStream(), this.charset);
 		}

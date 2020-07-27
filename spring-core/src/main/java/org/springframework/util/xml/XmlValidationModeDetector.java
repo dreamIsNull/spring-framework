@@ -59,18 +59,18 @@ public class XmlValidationModeDetector {
 	private static final String DOCTYPE = "DOCTYPE";
 
 	/**
-	 * The token that indicates the start of an XML comment.
+	 * XML 注释开始
 	 */
 	private static final String START_COMMENT = "<!--";
 
 	/**
-	 * The token that indicates the end of an XML comment.
+	 * XML 注释结束
 	 */
 	private static final String END_COMMENT = "-->";
 
 
 	/**
-	 * Indicates whether or not the current parse position is inside an XML comment.
+	 * 当前状态是否在注释语句
 	 */
 	private boolean inComment;
 
@@ -84,33 +84,42 @@ public class XmlValidationModeDetector {
 	 * @see #VALIDATION_XSD
 	 */
 	public int detectValidationMode(InputStream inputStream) throws IOException {
-		// Peek into the file to look for DOCTYPE.
+		// 读取传入的流文件
 		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 		try {
+			// 是否为 DTD 校验模式。默认为，非 DTD 模式，即 XSD 模式
 			boolean isDtdValidated = false;
 			String content;
+			// <0> 循环，逐行读取 XML 文件的内容
 			while ((content = reader.readLine()) != null) {
+
+				// 这里进行注释的处理
 				content = consumeCommentTokens(content);
+
+				// 如果是注释，或者空行则跳过
 				if (this.inComment || !StringUtils.hasText(content)) {
 					continue;
 				}
+
+				// <1> 包含 DOCTYPE 为 DTD 模式
 				if (hasDoctype(content)) {
 					isDtdValidated = true;
 					break;
 				}
+				// <2>  hasOpeningTag 方法会校验，如果这一行有 "<" ，并且 "<" 后面跟着的是字母，则返回 true 。
 				if (hasOpeningTag(content)) {
-					// End of meaningful data...
 					break;
 				}
 			}
+			// 返回 VALIDATION_DTD or VALIDATION_XSD 模式
 			return (isDtdValidated ? VALIDATION_DTD : VALIDATION_XSD);
 		}
 		catch (CharConversionException ex) {
-			// Choked on some character encoding...
-			// Leave the decision up to the caller.
+			// <3> 返回 VALIDATION_AUTO 模式
 			return VALIDATION_AUTO;
 		}
 		finally {
+			// 关闭输入流
 			reader.close();
 		}
 	}
@@ -133,8 +142,9 @@ public class XmlValidationModeDetector {
 			return false;
 		}
 		int openTagIndex = content.indexOf('<');
-		return (openTagIndex > -1 && (content.length() > openTagIndex + 1) &&
-				Character.isLetter(content.charAt(openTagIndex + 1)));
+		return (openTagIndex > -1 // "<" 存在
+				&& (content.length() > openTagIndex + 1) // "<" 后面还有内容
+				&& Character.isLetter(content.charAt(openTagIndex + 1))); // "<" 后面的内容是字母
 	}
 
 	/**
@@ -145,12 +155,18 @@ public class XmlValidationModeDetector {
 	 */
 	@Nullable
 	private String consumeCommentTokens(String line) {
+
+		//START_COMMENT = "<!--"; END_COMMENT = "-->"
+		// <1> 如果是普通的语句就直接返回（不包含"<!--"、"-->"）
 		if (!line.contains(START_COMMENT) && !line.contains(END_COMMENT)) {
 			return line;
 		}
 		String currLine = line;
+
+		// <2> 循环处理，去掉注释
 		while ((currLine = consume(currLine)) != null) {
 			if (!this.inComment && !currLine.trim().startsWith(START_COMMENT)) {
+				// 当前状态不在注释语句且不以"<!--"开始
 				return currLine;
 			}
 		}
@@ -158,8 +174,7 @@ public class XmlValidationModeDetector {
 	}
 
 	/**
-	 * Consume the next comment token, update the "inComment" flag
-	 * and return the remaining content.
+	 * 如果包含头标记，则返回头标记以后的内容；如果包含结束标记，则返回标记后面的内容。
 	 */
 	@Nullable
 	private String consume(String line) {
@@ -185,6 +200,7 @@ public class XmlValidationModeDetector {
 	 * which is after the token or -1 if the token is not found.
 	 */
 	private int commentToken(String line, String token, boolean inCommentIfPresent) {
+		// 是否包含 token,如果包含则返回token所在的索引位置+token长度，如果没有包含则返回-1
 		int index = line.indexOf(token);
 		if (index > - 1) {
 			this.inComment = inCommentIfPresent;
