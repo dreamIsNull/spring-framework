@@ -37,25 +37,30 @@ import java.io.IOException;
  */
 public class DelegatingEntityResolver implements EntityResolver {
 
-	/** Suffix for DTD files */
+	/**
+	 * DTD文件后缀
+	 */
 	public static final String DTD_SUFFIX = ".dtd";
 
-	/** Suffix for schema definition files */
+	/**
+	 * xsd文件后缀
+	 */
 	public static final String XSD_SUFFIX = ".xsd";
 
 
+	/**
+	 * DTD 解析器
+	 */
 	private final EntityResolver dtdResolver;
 
+	/**
+	 * xsd 解析器
+	 */
 	private final EntityResolver schemaResolver;
 
 
 	/**
-	 * Create a new DelegatingEntityResolver that delegates to
-	 * a default {@link BeansDtdResolver} and a default {@link PluggableSchemaResolver}.
-	 * <p>Configures the {@link PluggableSchemaResolver} with the supplied
-	 * {@link ClassLoader}.
-	 * @param classLoader the ClassLoader to use for loading
-	 * (can be {@code null}) to use the default ClassLoader)
+	 * 默认
 	 */
 	public DelegatingEntityResolver(@Nullable ClassLoader classLoader) {
 		this.dtdResolver = new BeansDtdResolver();
@@ -63,10 +68,7 @@ public class DelegatingEntityResolver implements EntityResolver {
 	}
 
 	/**
-	 * Create a new DelegatingEntityResolver that delegates to
-	 * the given {@link EntityResolver EntityResolvers}.
-	 * @param dtdResolver the EntityResolver to resolve DTDs with
-	 * @param schemaResolver the EntityResolver to resolve XML schemas with
+	 * 自定义
 	 */
 	public DelegatingEntityResolver(EntityResolver dtdResolver, EntityResolver schemaResolver) {
 		Assert.notNull(dtdResolver, "'dtdResolver' is required");
@@ -83,9 +85,11 @@ public class DelegatingEntityResolver implements EntityResolver {
 
 		if (systemId != null) {
 			if (systemId.endsWith(DTD_SUFFIX)) {
+				// 如果是 DTD 验证模式，则使用 BeansDtdResolver 来进行解析
 				return this.dtdResolver.resolveEntity(publicId, systemId);
 			}
 			else if (systemId.endsWith(XSD_SUFFIX)) {
+				// 如果是 XSD 验证模式，则使用 PluggableSchemaResolver 来进行解析
 				return this.schemaResolver.resolveEntity(publicId, systemId);
 			}
 		}

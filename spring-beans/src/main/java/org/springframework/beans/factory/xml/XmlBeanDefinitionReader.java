@@ -112,6 +112,9 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 
 	private DocumentLoader documentLoader = new DefaultDocumentLoader();
 
+	/**
+	 * EntityResolver 解析器
+	 */
 	@Nullable
 	private EntityResolver entityResolver;
 
@@ -257,7 +260,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 */
 	protected EntityResolver getEntityResolver() {
 		if (this.entityResolver == null) {
-			// Determine default EntityResolver to use.
+			// 获取ResourceLoader
 			ResourceLoader resourceLoader = getResourceLoader();
 			if (resourceLoader != null) {
 				this.entityResolver = new ResourceEntityResolver(resourceLoader);
