@@ -1,8 +1,9 @@
 package com.test;
 
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.xml.XmlBeanFactory;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 
 import java.io.IOException;
 
@@ -12,27 +13,29 @@ import java.io.IOException;
  */
 public class MyApplication {
  	public static void main(String[] args) throws IOException {
-//		Resource classPathResource = new ClassPathResource("application.xml");
-//		BeanFactory bf =new XmlBeanFactory(classPathResource);
-//		Person person = bf.getBean("pee", Person.class);
-		
-		ClassPathResource resource = new ClassPathResource("application.xml");
-		DefaultListableBeanFactory factory = new DefaultListableBeanFactory();
-		XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(factory);
-		reader.loadBeanDefinitions(resource);
+		Resource classPathResource = new FileSystemResource("H:/Code/study/spring-framework/spring-test/src/main/resources/beans.xml");
+//		Resource classPathResource = new ClassPathResource("beans.xml");
+		BeanFactory bf =new XmlBeanFactory(classPathResource);
+		Person person = bf.getBean("pee", Person.class);
+		System.out.println(person);
+//		ClassPathResource resource = new ClassPathResource("beans.xml");
+//		System.out.println(resource.exists());
+//		DefaultListableBeanFactory factory = new DefaultListableBeanFactory();
+//		XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(factory);
+//		reader.loadBeanDefinitions(resource);
 //		Person person = factory.getBean("pee", Person.class);
 //		System.out.println(person);
 
 //		PathMatchingResourcePatternResolver pathMatchingResourcePatternResolver = new PathMatchingResourcePatternResolver();
-//		pathMatchingResourcePatternResolver.getResources("classpath*:test*/cc*/dd/ff/application.xml");
+//		pathMatchingResourcePatternResolver.getResources("classpath*:test*/cc*/dd/ff/beans.xml");
 
 
 //		ResourceLoader
 //		person.getClass().getClassLoader();
 //		System.out.println(person.getName());
-//		ApplicationContext context = new ClassPathXmlApplicationContext("classpath*:application.xml");
-//		ApplicationContext context = new ClassPathXmlApplicationContext("application.xml");
-//		Person person = context.getBean("person", Person.class);
+//		ApplicationContext context = new ClassPathXmlApplicationContext("classpath*:beans.xml");
+//		ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
+//		Person person = context.getBean("pee", Person.class);
 //		System.out.println(person.getName());
 
 //		ResourceLoader resourceLoader = new DefaultResourceLoader();
