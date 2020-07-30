@@ -4,10 +4,10 @@
 
 * [1. 统一资源：Resource](#1)
   * [1.1 Resource体系结构](#1.1)
-  * [1.2 AbstractResource](#1.2)
+  * [1.2 默认实现：AbstractResource](#1.2)
 * [2. 统一资源加载(定位)：ResourceLoader](#2)
   * [2.1 ResourceLoader体系结构](#2.1)
-  * [2.2 DefaultResourceLoader](#2.2)
+  * [2.2 默认实现：DefaultResourceLoader](#2.2)
     * [2.2.1 构造函数](#2.2.1)
     * [2.2.2 getResource 方法](#2.2.2)
     * [2.2.3 ProtocolResolver](#2.2.3)
@@ -149,7 +149,8 @@ public interface Resource extends InputStreamSource {
 8. `FileSystemResource`  对 `java.io.File` 类型资源的封装，只要是跟 `File` 打交道的，基本上与 `FileSystemResource` 也可以打交道。支持**文件和 `URL`** 的形式。
 
 <span id ="1.2"></span>
-## 1.2 AbstractResource
+
+## 1.2 默认实现：AbstractResource
 
 &nbsp;&nbsp; `org.springframework.core.io.AbstractResource` ，为 `Resource` 接口的**默认抽象**实现。它实现了 `Resource` 接口的**大部分的公共实现**，作为 `Resource` 接口中的重中之重，其定义如下： 
 
@@ -380,7 +381,8 @@ public interface ResourceLoader {
 > 由`DefaultResourceLoader`提供默认实现
 
 <span id ="2.2"></span>
-## 2.2 DefaultResourceLoader
+
+## 2.2 默认实现：DefaultResourceLoader
 
 &nbsp;&nbsp;  与 `AbstractResource` 相似，`org.springframework.core.io.DefaultResourceLoader` 是 `ResourceLoader` 的默认实现。 
 

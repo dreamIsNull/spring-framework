@@ -40,16 +40,12 @@ import org.springframework.lang.Nullable;
 public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 
 	/**
-	 * Scope identifier for the standard singleton scope: "singleton".
-	 * <p>Note that extended bean factories might support further scopes.
-	 * @see #setScope
+	 * 单例 singleton
 	 */
 	String SCOPE_SINGLETON = ConfigurableBeanFactory.SCOPE_SINGLETON;
 
 	/**
-	 * Scope identifier for the standard prototype scope: "prototype".
-	 * <p>Note that extended bean factories might support further scopes.
-	 * @see #setScope
+	 * 原型 prototype
 	 */
 	String SCOPE_PROTOTYPE = ConfigurableBeanFactory.SCOPE_PROTOTYPE;
 
