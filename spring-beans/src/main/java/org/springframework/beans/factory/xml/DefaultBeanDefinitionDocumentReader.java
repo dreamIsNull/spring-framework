@@ -182,15 +182,13 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 					if (delegate.isDefaultNamespace(ele)) {
 						// <1> 如果该节点使用默认命名空间，执行默认解析
 						parseDefaultElement(ele, delegate);
-					}
-					else {
+					}else {
 						// 如果该节点非默认命名空间，执行自定义解析
 						delegate.parseCustomElement(ele);
 					}
 				}
 			}
-		}
-		else {
+		}else {
 			// <2> 如果根节点非默认命名空间，执行自定义解析
 			delegate.parseCustomElement(root);
 		}
