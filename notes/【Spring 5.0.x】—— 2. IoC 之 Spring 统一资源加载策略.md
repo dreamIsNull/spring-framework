@@ -9,7 +9,7 @@
   * [2.1 ResourceLoader体系结构](#2.1)
   * [2.2 默认实现：DefaultResourceLoader](#2.2)
     * [2.2.1 构造函数](#2.2.1)
-    * [2.2.2 getResource 方法](#2.2.2)
+    * [2.2.2 getResource](#2.2.2)
     * [2.2.3 ProtocolResolver](#2.2.3)
   * [2.3 FileSystemResourceLoader](#2.3)
     * [2.3.1 FileSystemContextResource](#2.3.1)
@@ -17,7 +17,7 @@
   * [2.5 PathMatchingResourcePatternResolver](#2.5)
     * [2.5.1 构造函数](#2.5.1)
     * [2.5.2 getResource](#2.5.2)
-    * [2.5.3 getResources](#2.5.3)
+    * [2.5.3 getResource#getResources](#2.5.3)
     * [2.5.4 findAllClassPathResources](#2.5.4)
     * [2.5.5 findPathMatchingResources](#2.5.5)
       * [2.5.5.1 determineRootDir](#2.5.5.1)
@@ -435,7 +435,8 @@ public ClassLoader getClassLoader() {
 >  后续可以调用 `#setClassLoader()` 方法进行设置。 
 
 <span id ="2.2.2"></span>
-### 2.2.2 getResource 方法
+
+### 2.2.2 getResource
 
 &nbsp;&nbsp; `ResourceLoader` 中最核心的方法为 `#getResource(String location)` ，它根据提供的资源路径 location 返回相应的 `Resource` 。而 `DefaultResourceLoader` 对该方法提供了**核心实现**（子类没有覆盖方法，所以`ResourceLoader` 的资源加载策略封装在 `DefaultResourceLoader` 中)
 
@@ -705,6 +706,7 @@ public PathMatchingResourcePatternResolver(@Nullable ClassLoader classLoader) {
 * `pathMatcher` 属性，默认为 `AntPathMatcher` 对象，用于支持 `Ant` 类型的路径匹配。
 
 <span id ="2.5.2"></span>
+
 ### 2.5.2 getResource
 
 ```java
@@ -724,7 +726,8 @@ public ResourceLoader getResourceLoader() {
  &nbsp;&nbsp; 该方法，直接委托给相应的 `ResourceLoader` 来实现。所以，如果我们在实例化`PathMatchingResourcePatternResolver` 的时候，如果未指定 `ResourceLoader` 参数的情况下，那么在加载资源时，其实就是 `DefaultResourceLoader` 的过程 。
 
 <span id ="2.5.3"></span>
-### 2.5.3 getResources
+
+### 2.5.3 getResource#getResources
 
 ```java
 // org.springframework.core.io.support.PathMatchingResourcePatternResolver.java
@@ -765,6 +768,7 @@ public Resource[] getResources(String locationPattern) throws IOException {
 - 其他情况，调用 `#findAllClassPathResources(...)`、或 `#findPathMatchingResources(...)` 方法，返回多个 `Resource` 。
 
 <span id ="2.5.4"></span>
+
 ### 2.5.4 findAllClassPathResources
 
 &nbsp;&nbsp; 当 `locationPattern` 以 `"classpath*:"` 开头但是不包含通配符，则调用 `#findAllClassPathResources(...)` 方法加载资源。该方法返回 classes 路径下和所有 jar 包中的所有相匹配的资源。 
@@ -854,6 +858,7 @@ protected Resource convertClassLoaderURL(URL url) {
 >  通过上面的分析，我们知道 `#findAllClassPathResources(...)` 方法，其实就是利用 `ClassLoader` 来加载指定路径下的资源，不论它是在 class 路径下还是在 jar 包中。如果我们传入的路径为空或者 `/`，则会调用 `#addAllClassLoaderJarRoots(...)` 方法，加载所有的 jar 包。
 
 <span id ="2.5.5"></span>
+
 ### 2.5.5 findPathMatchingResources
 
 &nbsp;&nbsp;  当 `locationPattern` 中包含了**通配符**，则调用该方法进行资源加载。 
@@ -910,6 +915,7 @@ protected Resource[] findPathMatchingResources(String locationPattern) throws IO
 &nbsp;&nbsp; 在这个方法里面，我们要关注两个方法，一个是 `#determineRootDir(String location)` 方法，一个是 `#doFindPathMatchingXXXResources(...)` 等方法。 
 
 <span id ="2.5.5.1"></span>
+
 #### 2.5.5.1 determineRootDir
 
  &nbsp;&nbsp; `determineRootDir(String location)` 方法，主要是用于确定根路径。
@@ -944,6 +950,7 @@ protected String determineRootDir(String location) {
 | `classpath*:test/aa/spring-*.xml`  | `classpath*:test/aa/` |
 
 <span id ="2.5.5.2"></span>
+
 #### 2.5.5.2 doFindPathMatchingXXXResources
 
 `#doFindPathMatchingXXXResources(...)` 方法，是个泛指，一共对应三个方法：

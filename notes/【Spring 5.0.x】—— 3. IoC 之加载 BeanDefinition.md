@@ -49,6 +49,7 @@ reader.loadBeanDefinitions(resource); // <4>
 > 上述步骤 ：**XML Resource => XML Document => Bean Definition** 。
 
 <span id="2"></span>
+
 # 2. loadBeanDefinitions
 
 &nbsp;&nbsp; **资源定位与加载**在[【Spring 5.0.x】—— 2. IoC 之 Spring 统一资源加载策略]()已经分析过了。这里我们分析**加载**，上面看到的 `reader.loadBeanDefinitions(resource)` 代码，才是**加载资源的真正实现**，所以我们直接从该方法入手。代码如下： 

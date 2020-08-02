@@ -182,7 +182,7 @@ public class YoungMan {
 <span id="3.2"></span>
 ## 3.2 BeanDefinition体系
 
-&nbsp;&nbsp;  `BeanDefinition(org.springframework.beans.factory.config.BeanDefinition)` 用来描述 `Spring` 中的 `Bean` 对象，是描述一个`bean`对象的基本数据结构 。由`AbstractBeanDefinition`提供默认实现。
+&nbsp;&nbsp;  `BeanDefinition(org.springframework.beans.factory.config.BeanDefinition)` 用来描述 `Spring` 中的 `Bean` 对象，是描述一个`bean`对象的**基本数据结构** 。由`AbstractBeanDefinition`提供默认实现。
 
 .<center>![Spring Beandefinition](source/Spring Beandefinition  结构.png)</center>
 
