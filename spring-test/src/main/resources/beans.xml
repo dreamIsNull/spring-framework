@@ -3,7 +3,7 @@
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 	<bean id="person" name="pe,pee" class="com.test.Person" scope="singleton" >
-		<constructor-arg name="id"  value="1" index="2"></constructor-arg>
+		<constructor-arg name="id"  value="1" index="0"></constructor-arg>
 		<constructor-arg name="name" value="tom"></constructor-arg>
 		<constructor-arg name="birthday" value="2020-07-30"></constructor-arg>
 		<constructor-arg name="age" value="1"></constructor-arg>
@@ -12,5 +12,7 @@
 		<property name="age" value="17"/>
 		<property name="birthday" value="2020-07-30"/>
 	</bean>
+
+	<alias name="person" alias="person2,person3"/>
 
 </beans>

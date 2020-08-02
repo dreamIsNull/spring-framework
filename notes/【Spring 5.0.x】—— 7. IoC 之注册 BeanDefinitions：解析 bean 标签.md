@@ -1544,7 +1544,7 @@ public BeanDefinitionHolder decorateIfRequired(
 * 在 `<2>` 处，如果**不是默认的命名空间**，则根据该命名空间获取相应的处理器。
 * 在 `<3>` 处，如果处理器存在，则进行装饰处理。
 
- &nbsp;&nbsp; 上述过程的详细解析，见 [【Spring 5.0.x】—— 11. IoC 之注册 BeanDefinitions：解析 自定义 标签》]() 一文。 
+ &nbsp;&nbsp; 上述过程的详细解析，见 [【Spring 5.0.x】—— 9. IoC 之注册 BeanDefinitions：解析 自定义 标签]() 一文。 
 
 <span id="5"></span>
 # 5. 总结
