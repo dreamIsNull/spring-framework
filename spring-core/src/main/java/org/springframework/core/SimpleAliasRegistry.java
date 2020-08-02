@@ -42,7 +42,11 @@ public class SimpleAliasRegistry implements AliasRegistry {
 	/** Logger available to subclasses */
 	protected final Log logger = LogFactory.getLog(getClass());
 
-	/** Map from alias to canonical name */
+	/**
+	 * 别名Map
+	 * 	key: alias
+	 * 	value: beanName
+	 */
 	private final Map<String, String> aliasMap = new ConcurrentHashMap<>(16);
 
 
@@ -55,7 +59,7 @@ public class SimpleAliasRegistry implements AliasRegistry {
 		Assert.hasText(alias, "'alias' must not be empty");
 		synchronized (this.aliasMap) {
 			if (alias.equals(name)) {
-				// 别名和实际名称一样，
+				// 别名和实际名称一样，则去掉alias
 				this.aliasMap.remove(alias);
 				if (logger.isDebugEnabled()) {
 					logger.debug("Alias definition '" + alias + "' ignored since it points to same name");
@@ -68,6 +72,7 @@ public class SimpleAliasRegistry implements AliasRegistry {
 						// 如果俩者相同，所以已经注册过，直接返回
 						return;
 					}
+					// 不允许覆盖，则抛出 IllegalStateException 异常
 					if (!allowAliasOverriding()) {
 						throw new IllegalStateException("Cannot define alias '" + alias + "' for name '" +
 								name + "': It is already registered for name '" + registeredName + "'.");
