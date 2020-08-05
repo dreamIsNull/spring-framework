@@ -14,8 +14,10 @@ import java.io.IOException;
 public class MyApplication {
  	public static void main(String[] args) throws IOException {
 		Resource classPathResource = new FileSystemResource("H:/Code/study/spring-framework/spring-test/src/main/resources/beans.xml");
+		Resource classPathResource2 = new FileSystemResource("H:/Code/study/spring-framework/spring-test/src/main/resources/beans2.xml");
 //		Resource classPathResource = new ClassPathResource("beans.xml");
 		BeanFactory bf =new XmlBeanFactory(classPathResource);
+		
 		Person person = bf.getBean("pee", Person.class);
 		System.out.println(person);
 //		ClassPathResource resource = new ClassPathResource("beans.xml");

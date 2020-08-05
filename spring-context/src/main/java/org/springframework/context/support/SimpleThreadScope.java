@@ -16,16 +16,15 @@
 
 package org.springframework.context.support;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.config.Scope;
 import org.springframework.core.NamedThreadLocal;
 import org.springframework.lang.Nullable;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple thread-backed {@link Scope} implementation.
@@ -66,10 +65,12 @@ public class SimpleThreadScope implements Scope {
 
 	@Override
 	public Object get(String name, ObjectFactory<?> objectFactory) {
+		// 获取 scope 缓存
 		Map<String, Object> scope = this.threadScope.get();
 		Object scopedObject = scope.get(name);
 		if (scopedObject == null) {
 			scopedObject = objectFactory.getObject();
+			// 加入缓存
 			scope.put(name, scopedObject);
 		}
 		return scopedObject;
