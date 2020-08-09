@@ -164,7 +164,7 @@ private final Map<String, ObjectFactory<?>> singletonFactories = new HashMap<>(1
 private final Map<String, Object> earlySingletonObjects = new HashMap<>(16);
 
 /**
- * 注册的单例bean集合（有序）
+ * 所有注册的单例bean集合（有序）
  */
 private final Set<String> registeredSingletons = new LinkedHashSet<>(256);
 

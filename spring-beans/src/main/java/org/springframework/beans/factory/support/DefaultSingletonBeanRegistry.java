@@ -98,7 +98,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	private final Map<String, Object> earlySingletonObjects = new HashMap<>(16);
 
 	/**
-	 * 注册的单例bean集合（有序）
+	 * 所有注册的单例bean集合（有序）
 	 */
 	private final Set<String> registeredSingletons = new LinkedHashSet<>(256);
 

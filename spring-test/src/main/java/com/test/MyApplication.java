@@ -2,7 +2,7 @@ package com.test;
 
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
-import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
 import java.io.IOException;
@@ -13,9 +13,9 @@ import java.io.IOException;
  */
 public class MyApplication {
  	public static void main(String[] args) throws IOException {
-		Resource classPathResource = new FileSystemResource("H:/Code/study/spring-framework/spring-test/src/main/resources/beans.xml");
-		Resource classPathResource2 = new FileSystemResource("H:/Code/study/spring-framework/spring-test/src/main/resources/beans2.xml");
-//		Resource classPathResource = new ClassPathResource("beans.xml");
+//		Resource classPathResource = new FileSystemResource("H:/Code/study/spring-framework/spring-test/src/main/resources/beans.xml");
+//		Resource classPathResource2 = new FileSystemResource("H:/Code/study/spring-framework/spring-test/src/main/resources/beans2.xml");
+		Resource classPathResource = new ClassPathResource("beans.xml");
 		BeanFactory bf =new XmlBeanFactory(classPathResource);
 		
 		Person person = bf.getBean("pee", Person.class);
