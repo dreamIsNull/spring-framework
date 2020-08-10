@@ -1382,8 +1382,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			if (System.getSecurityManager() != null) {
 				return AccessController.doPrivileged((PrivilegedExceptionAction<Class<?>>)
 						() -> doResolveBeanClass(mbd, typesToMatch), getAccessControlContext());
-			}
-			else {
+			}else {
 				return doResolveBeanClass(mbd, typesToMatch);
 			}
 		}

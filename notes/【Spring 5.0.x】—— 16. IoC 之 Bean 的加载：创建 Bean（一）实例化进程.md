@@ -2,10 +2,17 @@
 
 #### 目录
 
-* [](#)
+* [1. createBean 抽象方法](#1)
+* [2. createBean 默认实现](#2)
+  * [2.1 解析指定 BeanDefinition 的 class](#2.1)
+  * [2.2 处理 override 属性](#2.2)
+  * [2.3 实例化的前置处理](#2.3)
+  * [2.4 创建 Bean](#2.4)
+* [3. 总结](#3)
 
 ****
 
+<span id =  "1" ></span>
 # 1. createBean 抽象方法
 
 &nbsp;&nbsp; 在 [《【Spring 5.0.x】—— 15. IoC 之 Bean 的加载：分析各 scope 的 Bean 创建》]() 中，有一个核心方法没有讲到， `#createBean(String beanName, RootBeanDefinition mbd, Object[] args)` 方法 
@@ -25,6 +32,7 @@ protected abstract Object createBean(String beanName, RootBeanDefinition mbd, @N
   *  `mbd` ：已经合并了父类属性的（如果有的话）`BeanDefinition` 对象 
   *  `args` ：用于构造函数或者工厂方法创建 `Bean` 实例对象的参数 
 
+<span id =  "2" ></span>
 # 2. createBean 默认实现
 
  &nbsp;&nbsp; 该抽象方法的**默认实现**是在类 `AbstractAutowireCapableBeanFactory`中实现 
@@ -100,6 +108,7 @@ protected Object createBean(String beanName, RootBeanDefinition mbd, @Nullable O
 *  `<3>` 处，实例化的**前置处理** 。见  [「2.3 实例化的前置处理」](#2.3) 
 *  `<4>` 处，创建 Bean 对象 。见  [「2.4 创建 Bean」](#2.4) 
 
+<span id =  "2.1" ></span>
 ## 2.1 解析指定 BeanDefinition 的 class
 
 ```java
@@ -110,8 +119,255 @@ protected Object createBean(String beanName, RootBeanDefinition mbd, @Nullable O
 // 主要是因为该动态解析的 class 无法保存到到共享的 BeanDefinition
 Class<?> resolvedClass = resolveBeanClass(mbd, beanName);
 if (resolvedClass != null && !mbd.hasBeanClass() && mbd.getBeanClassName() != null) {
+	// 如果resolvedClass存在，并且mdb的beanClass类型不是Class，并且mdb的beanClass不为空（则代表beanClass存的是Class的name）,
+	// 则使用mdb深拷贝一个新的RootBeanDefinition副本，并且将解析的Class赋值给拷贝的RootBeanDefinition副本的beanClass属性，
+	// 该拷贝副本取代mdb用于后续的操作
 	mbdToUse = new RootBeanDefinition(mbd);
 	mbdToUse.setBeanClass(resolvedClass);
 }
 ```
 
+*  `#resolveBeanClass(final RootBeanDefinition mbd, String beanName, final Class... typesToMatch)` 方法，主要是解析 `bean definition` 的 `class` 类，并将已经解析的 `Class` 存储在 `bean definition` 中以供后面使用 
+*  如果解析的 `class` 不为空，则会将该 `BeanDefinition` 进行设置到 `mbdToUse` 中。这样做的主要目的是，动态解析的 `class` 是无法保存到共享的 `BeanDefinition` 中 
+
+<span id =  "2.2" ></span>
+## 2.2 处理 override 属性
+
+ &nbsp;&nbsp; `bean` 实例化的过程中如果检测到存在 `methodOverrides` ，则会动态地位为当前 `bean` 生成代理并使用对应的拦截器为 `bean` 做**增强处理**。看 `mbdToUse.prepareMethodOverrides()` 代码块，都干了些什么事 
+
+```java
+// org.springframework.beans.factory.support.AbstractBeanDefinition.java
+
+public void prepareMethodOverrides() throws BeanDefinitionValidationException {
+	// Check that lookup methods exist and determine their overloaded status.
+	if (hasMethodOverrides()) {
+		// 循环，执行 prepareMethodOverride
+		getMethodOverrides().getOverrides().forEach(this::prepareMethodOverride);
+	}
+}
+```
+
+ &nbsp;&nbsp; 如果存在 `methodOverrides` ，则获取所有的 `override method` ，然后通过迭代的方法一次调用 `#prepareMethodOverride(MethodOverride mo)` 方法
+
+```java 
+// org.springframework.beans.factory.support.AbstractBeanDefinition.java
+
+protected void prepareMethodOverride(MethodOverride mo) throws BeanDefinitionValidationException {
+	int count = ClassUtils.getMethodCountForName(getBeanClass(), mo.getMethodName());
+	if (count == 0) {
+		throw new BeanDefinitionValidationException(
+				"Invalid method override: no method with name '" + mo.getMethodName() +
+				"' on class [" + getBeanClassName() + "]");
+	}
+	else if (count == 1) {
+		// Mark override as not overloaded, to avoid the overhead of arg type checking.
+		mo.setOverloaded(false);
+	}
+}
+```
+
+*  `#getMethodCountForName(Class<?> clazz, String methodName)`方法的作用是**根据方法名称，从 `class` 中获取该方法名的个数** 
+  *  如果**个数为 0** ，则抛出 `BeanDefinitionValidationException` 异常 
+  *  如果**个数为 1** ，则设置该重载方法**没有被重载** 
+* 若一个类中存在**多个**重载方法，则在方法调用的时候还需要根据参数类型来判断到底重载的是哪个方法。在设置重载的时候其实这里做了一个**小小优化**，那就是当 `count == 1` 时，设置 `overloaded = false` ，这样表示该方法没有重载。这样，在后续调用的时候，便可以直接找到方法而不需要进行方法参数的校验 
+
+ &nbsp;&nbsp; 其实 `mbdToUse.prepareMethodOverrides()` 代码块，并没有做什么实质性的工作，只是对 `methodOverrides` 属性**做了一些简单的校验**而已 
+
+<span id =  "2.3" ></span>
+## 2.3 实例化的前置处理
+
+ &nbsp;&nbsp; `#resolveBeforeInstantiation(String beanName, RootBeanDefinition mbd)` 方法的作用，是给 `BeanPostProcessors` 后置处理器返回一个**代理对象**的机会。其实在调用该方法之前 `Spring` 一直都没有创建 `bean` ，那么这里返回一个 `bean` 的代理类有什么作用呢？作用体现在后面的 `if` 判断 
+
+```java
+// org.springframework.beans.factory.support.AbstractBeanDefinition.java
+
+// <3> 实例化的前置处理
+// 给 BeanPostProcessors 一个机会用来返回一个代理类而不是真正的类实例
+// AOP 的功能就是基于这个地方
+Object bean = resolveBeforeInstantiation(beanName, mbdToUse);
+if (bean != null) {
+	return bean;
+}
+```
+
+ &nbsp;&nbsp; 如果**代理对象不为空，则直接返回代理对象**，这一步骤有非常重要的作用，`Spring` 后续实现 `AOP` 就是基于这个地方判断的 
+
+ &nbsp;&nbsp; `#resolveBeforeInstantiation(String beanName, RootBeanDefinition mbd)` 方法， 代码如下 
+
+```java 
+// org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.java
+
+@Nullable
+protected Object resolveBeforeInstantiation(String beanName, RootBeanDefinition mbd) {
+	Object bean = null;
+	if (!Boolean.FALSE.equals(mbd.beforeInstantiationResolved)) {
+		// Make sure bean class is actually resolved at this point.
+		if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
+			Class<?> targetType = determineTargetType(beanName, mbd);
+			if (targetType != null) {
+				// 前置
+				bean = applyBeanPostProcessorsBeforeInstantiation(targetType, beanName);
+				if (bean != null) {
+					// 后置
+					bean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
+				}
+			}
+		}
+		mbd.beforeInstantiationResolved = (bean != null);
+	}
+	return bean;
+}
+```
+
+&nbsp;&nbsp; 这个方法核心就在于 `applyBeanPostProcessorsBeforeInstantiation()` 和 `applyBeanPostProcessorsAfterInitialization()` 两个方法，**`before` 为实例化前的后处理器应用，`after` 为实例化后的后处理器应用** 
+
+<span id =  "2.4" ></span>
+## 2.4 创建 Bean
+
+ &nbsp;&nbsp; 如果**没有代理对象，就只能走常规的路线进行 `bean` 的创建**了，该过程有 `#doCreateBean(final String beanName, final RootBeanDefinition mbd, final @Nullable Object[] args)` 方法来实现 
+
+```java
+// org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.java
+
+protected Object doCreateBean(String beanName, RootBeanDefinition mbd, @Nullable Object[] args)
+		throws BeanCreationException {
+
+	// BeanWrapper 是对 Bean 的包装，其接口中所定义的功能很简单包括设置获取被包装的对象，获取被包装 bean 的属性描述器
+	BeanWrapper instanceWrapper = null;
+	if (mbd.isSingleton()) {
+		// <1> 单例模型，则从未完成的 FactoryBean 缓存中删除
+		instanceWrapper = this.factoryBeanInstanceCache.remove(beanName);
+	}
+	if (instanceWrapper == null) {
+		// <2> 使用合适的实例化策略来创建新的实例：工厂方法、构造函数自动注入、简单初始化
+		instanceWrapper = createBeanInstance(beanName, mbd, args);
+	}
+	// 包装的实例对象
+	Object bean = instanceWrapper.getWrappedInstance();
+	// 包装的实例对象的类型
+	Class<?> beanType = instanceWrapper.getWrappedClass();
+	if (beanType != NullBean.class) {
+		mbd.resolvedTargetType = beanType;
+	}
+
+	// <3> 判断是否有后置处理
+	// 如果有后置处理，则允许后置处理修改 BeanDefinition
+	synchronized (mbd.postProcessingLock) {
+		if (!mbd.postProcessed) {
+			try {
+				// 后置处理修改 BeanDefinition
+				applyMergedBeanDefinitionPostProcessors(mbd, beanType, beanName);
+			}
+			catch (Throwable ex) {
+				throw new BeanCreationException(mbd.getResourceDescription(), beanName,
+						"Post-processing of merged bean definition failed", ex);
+			}
+			mbd.postProcessed = true;
+		}
+	}
+
+	// <4> 解决单例模式的循环依赖
+	boolean earlySingletonExposure = (mbd.isSingleton()// 单例模式
+			&& this.allowCircularReferences // 运行循环依赖
+			&& isSingletonCurrentlyInCreation(beanName));// 当前单例 bean 是否正在被创建
+	if (earlySingletonExposure) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("Eagerly caching bean '" + beanName +
+					"' to allow for resolving potential circular references");
+		}
+		// 提前将创建的 bean 实例加入到 singletonFactories 中
+		// 这里是为了后期避免循环依赖
+		addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, bean));
+	}
+
+	// 开始初始化 bean 实例对象
+	Object exposedObject = bean;
+	try {
+		// <5> 对 bean 进行填充，将各个属性值注入，其中，可能存在依赖于其他 bean 的属性
+		// 则会递归初始依赖 bean
+		populateBean(beanName, mbd, instanceWrapper);
+		// <6> 调用初始化方法
+		exposedObject = initializeBean(beanName, exposedObject, mbd);
+	}
+	catch (Throwable ex) {
+		if (ex instanceof BeanCreationException && beanName.equals(((BeanCreationException) ex).getBeanName())) {
+			throw (BeanCreationException) ex;
+		}
+		else {
+			throw new BeanCreationException(
+					mbd.getResourceDescription(), beanName, "Initialization of bean failed", ex);
+		}
+	}
+
+	// <7> 循环依赖处理
+	if (earlySingletonExposure) {
+		// 获取 earlySingletonReference
+		Object earlySingletonReference = getSingleton(beanName, false);
+		// 只有在存在循环依赖的情况下，earlySingletonReference 才不会为空
+		if (earlySingletonReference != null) {
+			// 如果 exposedObject 没有在初始化方法中被改变，也就是没有被增强
+			if (exposedObject == bean) {
+				exposedObject = earlySingletonReference;
+			}else if (!this.allowRawInjectionDespiteWrapping && hasDependentBean(beanName)) {
+				// 处理依赖
+				String[] dependentBeans = getDependentBeans(beanName);
+				Set<String> actualDependentBeans = new LinkedHashSet<>(dependentBeans.length);
+				for (String dependentBean : dependentBeans) {
+					if (!removeSingletonIfCreatedForTypeCheckOnly(dependentBean)) {
+						actualDependentBeans.add(dependentBean);
+					}
+				}
+				if (!actualDependentBeans.isEmpty()) {
+					throw new BeanCurrentlyInCreationException(beanName,
+							"Bean with name '" + beanName + "' has been injected into other beans [" +
+							StringUtils.collectionToCommaDelimitedString(actualDependentBeans) +
+							"] in its raw version as part of a circular reference, but has eventually been " +
+							"wrapped. This means that said other beans do not use the final version of the " +
+							"bean. This is often the result of over-eager type matching - consider using " +
+							"'getBeanNamesForType' with the 'allowEagerInit' flag turned off, for example.");
+				}
+			}
+		}
+	}
+
+	try {
+		// <8> 注册 bean
+		registerDisposableBeanIfNecessary(beanName, bean, mbd);
+	}
+	catch (BeanDefinitionValidationException ex) {
+		throw new BeanCreationException(
+				mbd.getResourceDescription(), beanName, "Invalid destruction signature", ex);
+	}
+
+	return exposedObject;
+}
+```
+
+ 整体的思路如下
+
+*  `<1>` 处，如果是**单例模式，则清除缓存**
+
+*  `<2>` 处，调用 `#createBeanInstance(String beanName, RootBeanDefinition mbd, Object[] args)` 方法，实例化 `bean` ，主要是将 `BeanDefinition` 转换为 `org.springframework.beans.BeanWrapper` 对象 。见 [《【Spring 5.0.x】—— 17. IoC 之 Bean 的加载：创建 Bean（二）Factory 实例化 bean》]() 和 [《【Spring 5.0.x】—— 18. IoC 之 Bean 的加载：创建 Bean（三）构造函数实例化 bean》]() 
+
+*  `<3>` 处，`MergedBeanDefinitionPostProcessor` 的应用 
+
+*  `<4>` 处，**单例模式的循环依赖处理** 。见 [《【Spring 5.0.x】—— 20. IoC 之 Bean 的加载：创建 Bean（五）循环依赖处理》]() 
+
+*  `<5>` 处，调用 `#populateBean(String beanName, RootBeanDefinition mbd, BeanWrapper bw)` 方法，进行**属性填充**。将所有属性填充至 `bean` 的实例中 。见 [《【Spring 5.0.x】—— 19. IoC 之 Bean 的加载：创建 Bean（四）属性填充》]() 
+
+*  `<6>` 处，调用 `#initializeBean(final String beanName, final Object bean, RootBeanDefinition mbd)` 方法，初始化 `bean` 。见 [《【Spring 5.0.x】—— 21. IoC 之 Bean 的加载：创建 Bean（六）初始化 Bean 对象》]() 
+
+*  `<7>` 处，**依赖检查** 
+
+*  `<8>` 处，**注册 `DisposableBean `**
+
+<span id =  "3" ></span>
+
+# 3. 总结
+
+   &nbsp;&nbsp; `#doCreateBean(...)` 方法，完成 **`bean` 的创建和初始化工作**，这里列出整体思路。下面将从以下几个方面进行阐述 
+
+  *  `#createBeanInstance(String beanName, RootBeanDefinition mbd, Object[] args)` 方法，**实例化 `bean`** 
+  *  **循环依赖的处理** 
+  *  `#populateBean(String beanName, RootBeanDefinition mbd, BeanWrapper bw)` 方法，进行**属性填充** 
+  *  `#initializeBean(final String beanName, final Object bean, RootBeanDefinition mbd)` 方法，**初始化 `Bean`** 
