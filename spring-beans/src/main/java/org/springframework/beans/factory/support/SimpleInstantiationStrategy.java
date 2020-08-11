@@ -154,8 +154,7 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 					ReflectionUtils.makeAccessible(factoryMethod);
 					return null;
 				});
-			}
-			else {
+			}else {
 				ReflectionUtils.makeAccessible(factoryMethod);
 			}
 
@@ -176,8 +175,7 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 				// 设置老的 Method 对象，到 currentlyInvokedFactoryMethod 中
 				if (priorInvokedFactoryMethod != null) {
 					currentlyInvokedFactoryMethod.set(priorInvokedFactoryMethod);
-				}
-				else {
+				}else {
 					currentlyInvokedFactoryMethod.remove();
 				}
 			}
