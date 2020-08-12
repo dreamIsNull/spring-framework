@@ -148,7 +148,7 @@ class ConstructorResolver {
 				minNrOfArgs = resolveConstructorArguments(beanName, mbd, bw, cargs, resolvedValues);
 			}
 
-			// Take specified constructors, if any.
+			// 如果 chosenCtors 未传入，则获取构造方法们
 			Constructor<?>[] candidates = chosenCtors;
 			if (candidates == null) {
 				Class<?> beanClass = mbd.getBeanClass();
@@ -219,9 +219,8 @@ class ConstructorResolver {
 						// continue ，继续执行
 						continue;
 					}
-				}
-				else {
-					// continue 构造函数没有参数
+				}else {
+					// 构造函数没有参数
 					if (paramTypes.length != explicitArgs.length) {
 						continue;
 					}
@@ -243,8 +242,7 @@ class ConstructorResolver {
 					argsToUse = argsHolder.arguments;
 					minTypeDiffWeight = typeDiffWeight;
 					ambiguousConstructors = null;
-				}
-				else if (constructorToUse != null && typeDiffWeight == minTypeDiffWeight) {
+				}else if (constructorToUse != null && typeDiffWeight == minTypeDiffWeight) {
 					if (ambiguousConstructors == null) {
 						ambiguousConstructors = new LinkedHashSet<>();
 						ambiguousConstructors.add(constructorToUse);
@@ -265,8 +263,7 @@ class ConstructorResolver {
 				throw new BeanCreationException(mbd.getResourceDescription(), beanName,
 						"Could not resolve matching constructor " +
 						"(hint: specify index/type/name arguments for simple parameters to avoid type ambiguities)");
-			}
-			else if (ambiguousConstructors != null && !mbd.isLenientConstructorResolution()) {
+			}else if (ambiguousConstructors != null && !mbd.isLenientConstructorResolution()) {
 				throw new BeanCreationException(mbd.getResourceDescription(), beanName,
 						"Ambiguous constructor matches found in bean '" + beanName + "' " +
 						"(hint: specify index/type/name arguments for simple parameters to avoid type ambiguities): " +
@@ -280,6 +277,7 @@ class ConstructorResolver {
 		}
 
 		try {
+			// 获取实例化 Bean 的策略 InstantiationStrategy 对象
 			final InstantiationStrategy strategy = beanFactory.getInstantiationStrategy();
 			Object beanInstance;
 
@@ -289,8 +287,7 @@ class ConstructorResolver {
 				beanInstance = AccessController.doPrivileged((PrivilegedAction<Object>) () ->
 						strategy.instantiate(mbd, beanName, beanFactory, ctorToUse, argumentsToUse),
 						beanFactory.getAccessControlContext());
-			}
-			else {
+			}else {
 				beanInstance = strategy.instantiate(mbd, beanName, this.beanFactory, constructorToUse, argsToUse);
 			}
 

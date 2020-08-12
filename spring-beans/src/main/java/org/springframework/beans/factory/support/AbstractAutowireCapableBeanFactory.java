@@ -533,7 +533,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		// <4> 解决单例模式的循环依赖
 		boolean earlySingletonExposure = (mbd.isSingleton()// 单例模式
-				&& this.allowCircularReferences // 运行循环依赖
+				&& this.allowCircularReferences // 允许提前暴露 bean
 				&& isSingletonCurrentlyInCreation(beanName));// 当前单例 bean 是否正在被创建
 		if (earlySingletonExposure) {
 			if (logger.isDebugEnabled()) {
@@ -1318,13 +1318,13 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			// 将 PropertyValues 封装成 MutablePropertyValues 对象
 			// MutablePropertyValues 允许对属性进行简单的操作，并提供构造函数以支持Map的深度复制和构造。
 			MutablePropertyValues newPvs = new MutablePropertyValues(pvs);
-			// 根据名称自动注入
 
+			// 根据名称自动注入
 			if (resolvedAutowireMode == AUTOWIRE_BY_NAME) {
 				autowireByName(beanName, mbd, bw, newPvs);
 			}
-			// 根据类型自动注入
 
+			// 根据类型自动注入
 			if (resolvedAutowireMode == AUTOWIRE_BY_TYPE) {
 				autowireByType(beanName, mbd, bw, newPvs);
 			}
@@ -1395,8 +1395,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					logger.debug("Added autowiring by name from bean name '" + beanName +
 							"' via property '" + propertyName + "' to bean named '" + propertyName + "'");
 				}
-			}
-			else {
+			}else {
 				if (logger.isTraceEnabled()) {
 					logger.trace("Not autowiring property '" + propertyName + "' of bean '" + beanName +
 							"' by name: no matching bean found");
@@ -1642,7 +1641,6 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				deepCopy.add(pv);
 			}else {
 				// 属性值需要转换
-
 
 				String propertyName = pv.getName();
 				// 原始的属性值，即转换之前的属性值

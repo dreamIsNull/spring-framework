@@ -268,7 +268,7 @@ protected Object doCreateBean(String beanName, RootBeanDefinition mbd, @Nullable
 
 	// <4> 解决单例模式的循环依赖
 	boolean earlySingletonExposure = (mbd.isSingleton()// 单例模式
-			&& this.allowCircularReferences // 运行循环依赖
+			&& this.allowCircularReferences // 允许提前暴露 bean
 			&& isSingletonCurrentlyInCreation(beanName));// 当前单例 bean 是否正在被创建
 	if (earlySingletonExposure) {
 		if (logger.isDebugEnabled()) {

@@ -1119,8 +1119,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 					}
 				}
 				instanceCandidate = matchingBeans.get(autowiredBeanName);
-			}
-			else {
+			}else {
 				// We have exactly one match.
 				Map.Entry<String, Object> entry = matchingBeans.entrySet().iterator().next();
 				autowiredBeanName = entry.getKey();
