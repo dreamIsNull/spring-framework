@@ -369,7 +369,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			throws BeansException {
 
 		Object result = existingBean;
-		// 处理
+		// 遍历 BeanPostProcessor 数组
 		for (BeanPostProcessor processor : getBeanPostProcessors()) {
 			// 处理
 			Object current = processor.postProcessBeforeInitialization(result, beanName);
@@ -388,7 +388,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			throws BeansException {
 
 		Object result = existingBean;
-		// 遍历 BeanPostProcessor
+		// 遍历 BeanPostProcessor 数组
 		for (BeanPostProcessor processor : getBeanPostProcessors()) {
 			// 处理
 			Object current = processor.postProcessAfterInitialization(result, beanName);
