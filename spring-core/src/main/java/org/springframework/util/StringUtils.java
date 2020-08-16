@@ -16,24 +16,11 @@
 
 package org.springframework.util;
 
+import org.springframework.lang.Nullable;
+
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Properties;
-import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.TimeZone;
-
-import org.springframework.lang.Nullable;
+import java.util.*;
 
 /**
  * Miscellaneous {@link String} utility methods.
@@ -645,6 +632,8 @@ public abstract class StringUtils {
 		if (!hasLength(path)) {
 			return path;
 		}
+
+		//替换path中的\\
 		String pathToUse = replace(path, WINDOWS_FOLDER_SEPARATOR, FOLDER_SEPARATOR);
 
 		// Strip prefix from path to analyze, to not treat it as part of the
@@ -657,8 +646,7 @@ public abstract class StringUtils {
 			prefix = pathToUse.substring(0, prefixIndex + 1);
 			if (prefix.contains(FOLDER_SEPARATOR)) {
 				prefix = "";
-			}
-			else {
+			}else {
 				pathToUse = pathToUse.substring(prefixIndex + 1);
 			}
 		}
@@ -667,26 +655,32 @@ public abstract class StringUtils {
 			pathToUse = pathToUse.substring(1);
 		}
 
+		// 按路径分隔符/拆分成字符串组数
 		String[] pathArray = delimitedListToStringArray(pathToUse, FOLDER_SEPARATOR);
+		// 采用LinkedList是因为该List实现支持更灵活的插入和删除某个index的元素的操作
 		LinkedList<String> pathElements = new LinkedList<>();
-		int tops = 0;
 
+		int tops = 0;
+		//此处从数组中最后一个元素开始遍历
 		for (int i = pathArray.length - 1; i >= 0; i--) {
 			String element = pathArray[i];
+
+
 			if (CURRENT_PATH.equals(element)) {
 				// Points to current directory - drop it.
-			}
-			else if (TOP_PATH.equals(element)) {
+				//当前路径元素./
+			}else if (TOP_PATH.equals(element)) {
 				// Registering top path found.
+				//上一级路径元素 ../
 				tops++;
-			}
-			else {
+			}else {
 				if (tops > 0) {
 					// Merging path element with element corresponding to top path.
+					//上一个元素是上一级路径，则该元素被合并了
 					tops--;
-				}
-				else {
+				}else {
 					// Normal path element found.
+					//每次添加都是添加到index为0的位置
 					pathElements.add(0, element);
 				}
 			}
@@ -696,11 +690,23 @@ public abstract class StringUtils {
 		for (int i = 0; i < tops; i++) {
 			pathElements.add(0, TOP_PATH);
 		}
+
+		//另一种更简洁的实现,正向遍历
+		/*for (int i = 0; i <pathArray.length;i++) {
+		    String element = pathArray[i];
+		    // 如果是上一级元素且元素数组中最后一个元素不是上一级元素，则移除该元素
+		    if (TOP_PATH.equals(element) && !pathElements.getLast().equals(TOP_PATH)) {
+		        pathElements.removeLast();
+		    }else if(!element.equals(CURRENT_PATH)){
+		        pathElements.addLast(element);
+		    }
+		}*/
 		// If nothing else left, at least explicitly point to current path.
 		if (pathElements.size() == 1 && "".equals(pathElements.getLast()) && !prefix.endsWith(FOLDER_SEPARATOR)) {
 			pathElements.add(0, CURRENT_PATH);
 		}
 
+		//将前缀和路径元素合并
 		return prefix + collectionToDelimitedString(pathElements, FOLDER_SEPARATOR);
 	}
 

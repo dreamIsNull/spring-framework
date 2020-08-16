@@ -45,6 +45,13 @@ public class MyApplication {
 //		Resource fileResource1 = resourceLoader.getResource("http://static.iocoder.cn/2446cc9fba90605b691ea250cf340ebb");
 //		System.out.println("fileResource1 is FileSystemResource:" + (fileResource1 instanceof FileSystemResource));
 
+
+
+//		System.out.println(StringUtils.cleanPath("file:org/springframework/core/../core/io/./Resource.class"));
+//		System.out.println(StringUtils.cleanPath("file:org/springframework/core/../asm/./Edge.class"));
+//		System.out.println(StringUtils.cleanPath("file:org/springframework/core/../../../asm/./Edge.class"));
+//		System.out.println(StringUtils.cleanPath("file:\\dir\\test.txt?argh"));
+
 	}
 
 }
