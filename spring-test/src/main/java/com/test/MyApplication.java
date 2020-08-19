@@ -1,5 +1,6 @@
 package com.test;
 
+import com.test.alias.User;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -18,8 +19,10 @@ public class MyApplication {
 		Resource classPathResource = new ClassPathResource("beans.xml");
 		BeanFactory bf =new XmlBeanFactory(classPathResource);
 		
-		Person person = bf.getBean("pee", Person.class);
-		System.out.println(person);
+//		Person person = bf.getBean("pee", Person.class);
+//		System.out.println(person);
+		User user = bf.getBean("user", User.class);
+		System.out.println(user);
 //		ClassPathResource resource = new ClassPathResource("beans.xml");
 //		System.out.println(resource.exists());
 //		DefaultListableBeanFactory factory = new DefaultListableBeanFactory();

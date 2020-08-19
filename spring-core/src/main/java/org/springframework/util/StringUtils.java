@@ -665,7 +665,6 @@ public abstract class StringUtils {
 		for (int i = pathArray.length - 1; i >= 0; i--) {
 			String element = pathArray[i];
 
-
 			if (CURRENT_PATH.equals(element)) {
 				// Points to current directory - drop it.
 				//当前路径元素./
