@@ -103,14 +103,14 @@ public int loadBeanDefinitions(EncodedResource encodedResource) throws BeanDefin
 		logger.info("Loading XML bean definitions from " + encodedResource);
 	}
 
-	// <1> 获取已经加载过的资源
+    // <1> 获取当前正在加载的资源
 	Set<EncodedResource> currentResources = this.resourcesCurrentlyBeingLoaded.get();
 	if (currentResources == null) {
 		currentResources = new HashSet<>(4);
 		this.resourcesCurrentlyBeingLoaded.set(currentResources);
 	}
 	
-	// 将当前资源加入记录中。如果已存在，抛出异常
+	// 将当前资源加入记录中。如果已存在，抛出异常(避免死循环)
 	if (!currentResources.add(encodedResource)) {
 		throw new BeanDefinitionStoreException(
 				"Detected cyclic loading of " + encodedResource + " - check your import definitions!");
@@ -147,7 +147,7 @@ public int loadBeanDefinitions(EncodedResource encodedResource) throws BeanDefin
 }
 ```
 
-* `<1>` 处通过 `this.resourcesCurrentlyBeingLoaded.get()` 代码，来**获取已经加载过的资源**，然后将 `encodedResource` 加入其中，如果  `resourcesCurrentlyBeingLoaded`  中已经存在该资源，则抛出 `BeanDefinitionStoreException` 异常。
+* `<1>` 处通过 `this.resourcesCurrentlyBeingLoaded.get()` 代码，来**获取当前正在加载的资源**，然后将 `encodedResource` 加入其中，如果  `resourcesCurrentlyBeingLoaded`  中已经存在该资源，则抛出 `BeanDefinitionStoreException` 异常。
 * 为什么需要这么做呢？答案在 `"Detected cyclic loading"` ，避免一个 `EncodedResource` 在加载时，还没加载完成，又加载自身，从而导致**死循环**。
   * 所以，在 `<3>` 处，当一个 `EncodedResource` 加载完成后，需要从缓存中剔除。
 * `<2>` 处理，从 `encodedResource` 获取封装的 `Resource` 资源，并从 `Resource` 中获取相应的 `InputStream` ，然后将 `InputStream` 封装为 `InputSource` ，最后调用 `#doLoadBeanDefinitions(InputSource inputSource, Resource resource)` 方法，执行加载 `Bean Definition` 的真正逻辑。

@@ -115,14 +115,14 @@ public int loadBeanDefinitions(EncodedResource encodedResource) throws BeanDefin
 		logger.info("Loading XML bean definitions from " + encodedResource);
 	}
 
-	// <1> 获取已经加载过的资源
+	// <1> 获取当前正在加载的资源
 	Set<EncodedResource> currentResources = this.resourcesCurrentlyBeingLoaded.get();
 	if (currentResources == null) {
 		currentResources = new HashSet<>(4);
 		this.resourcesCurrentlyBeingLoaded.set(currentResources);
 	}
 	
-	// 将当前资源加入记录中。如果已存在，抛出异常
+	// 将当前资源加入记录中。如果已存在，抛出异常(避免死循环)
 	if (!currentResources.add(encodedResource)) {
 		throw new BeanDefinitionStoreException(
 				"Detected cyclic loading of " + encodedResource + " - check your import definitions!");
