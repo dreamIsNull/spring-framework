@@ -19,7 +19,10 @@ public class MyApplication {
 		BeanFactory bf =new XmlBeanFactory(classPathResource);
 
 		Person person = bf.getBean("pee", Person.class);
-		System.out.println(person);
+//		Person2 person2 = bf.getBean("person2", Person2.class);
+//		System.out.println(person2.getName2());
+//		System.out.println(person.getPerson2().getName2());
+//		System.out.println(person);
 //		User user = bf.getBean("user", User.class);
 //		System.out.println(user);
 //		ClassPathResource resource = new ClassPathResource("beans.xml");

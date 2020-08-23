@@ -73,7 +73,7 @@ protected <T> T doGetBean(
 		throws BeansException {
 	/*
 	 * <1> 返回 bean 名称
-	 * 		剥离工厂引用前缀,如果出入&beanName,则去掉&,结果为beanName
+	 * 		剥离工厂引用前缀,如果传入&beanName,则去掉&,结果为beanName
 	 * 		如果 name 是 alias ，则获取对应映射的 beanName
 	 */
 	String beanName = transformedBeanName(name);

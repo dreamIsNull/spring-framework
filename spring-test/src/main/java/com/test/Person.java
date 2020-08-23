@@ -12,6 +12,8 @@ public class Person {
 	private Integer age;
 	private String birthday;
 
+	private Person2 person2;
+
 	public Person() {
 	}
 
@@ -62,6 +64,14 @@ public class Person {
 				", age="+age+
 				", birthday='"+birthday+'\''+
 				'}';
+	}
+
+	public Person2 getPerson2() {
+		return person2;
+	}
+
+	public void setPerson2(Person2 person2) {
+		this.person2 = person2;
 	}
 
 	public void say(){

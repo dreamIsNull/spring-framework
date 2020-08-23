@@ -217,7 +217,7 @@ protected <T> T doGetBean(
 <span id = "1"></span>
 # 1. 检测
 
-&nbsp;&nbsp; `Spring` **只解决单例模式下的循环依赖**，对于**原型模式的循环依赖则是抛出 `BeanCurrentlyInCreationExceptio`n 异常**，所以首先检查该 `beanName` 是否处于**原型模式**下的循环依赖 
+&nbsp;&nbsp; `Spring` **只解决单例模式下的循环依赖**，对于**原型模式的循环依赖则是抛出 `BeanCurrentlyInCreationException` 异常**，所以首先检查该 `beanName` 是否处于**原型模式**下的循环依赖 
 
 ```java
 // org.springframework.beans.factory.support.AbstractBeanFactory.java

@@ -13,6 +13,6 @@
 		<property name="birthday" value="2020-07-30"/>
 	</bean>
 
-	<alias name="person" alias="person2,person3"/>
+	<alias name="person" alias="person4,person5"/>
 
 </beans>
