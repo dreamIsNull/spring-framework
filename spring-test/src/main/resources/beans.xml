@@ -16,7 +16,7 @@
 		<property name="birthday" value="2020-07-30"/>
 	</bean>
 
-	<myTag:user id="user" email="12233445566@qq.com" userName="chenssy"/>
+	<!--<myTag:user id="user" email="12233445566@qq.com" userName="chenssy"/>-->
 
 	<alias name="person" alias="person2,person3"/>
 	<import resource="beans2.xml"/>

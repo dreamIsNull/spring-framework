@@ -64,7 +64,7 @@ protected BeanDefinitionDocumentReader createBeanDefinitionDocumentReader() {
 }
 ```
 
-&nbsp;&nbsp;  `documentReaderClass` 的默认值为 `DefaultBeanDefinitionDocumentReader.class` 。详细解析键见[「2.1 DefaultBeanDefinitionDocumentReader」](#2.1)
+&nbsp;&nbsp;  `documentReaderClass` 的默认值为 `DefaultBeanDefinitionDocumentReader.class` 。详细解析见[「2.1 DefaultBeanDefinitionDocumentReader」](#2.1)
 
 <span id="2"></span>
 # 2. registerBeanDefinitions

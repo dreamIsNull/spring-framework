@@ -207,7 +207,7 @@ protected EntityResolver getEntityResolver() {
 
 &nbsp;&nbsp;  上面的方法，一共涉及**四个** `EntityResolver` 的子类
 
-*  `org.springframework.beans.factory.xm.BeansDtdResolver` ：实现 `EntityResolver` 接口，`pring Bean dtd` 解码器，用来从 `classpath` 或者 `jar` 文件中加载 `dtd` 。
+*  `org.springframework.beans.factory.xm.BeansDtdResolver` ：实现 `EntityResolver` 接口，`spring Bean dtd` 解码器，用来从 `classpath` 或者 `jar` 文件中加载 `dtd` 。
 
 ```java
   // org.springframework.beans.factory.xm.BeansDtdResolver.java
@@ -329,7 +329,7 @@ public interface EntityResolver {
 &nbsp;&nbsp;  这两个参数的实际内容和具体的验证模式的关系如下： 
 
 * `XSD` 验证模式
-* `publicId`：null
+  * `publicId`：null
   * `systemId`：http://www.springframework.org/schema/beans/spring-beans.xsd
 * `DTD` 验证模式
   * `publicId`：-//SPRING//DTD BEAN 2.0//EN

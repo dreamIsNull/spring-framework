@@ -27,7 +27,7 @@
 &nbsp;&nbsp; `IoC` 全称为 `Inversion of Control`，译为**控制反转** ，它还有一个别名为`DI`(`Dependency Injection`)，即**依赖注入**。
 
 &nbsp;&nbsp; `IoC`定义如下:
-> 所谓Ioc，就是有Spring IoC 容器来负责对象的生命周期和对象之间的关系。
+> 所谓Ioc，就是由Spring IoC 容器来负责对象的生命周期和对象之间的关系。
 
 &nbsp;&nbsp; 理解**控制反转**需要知道下面四个问题：
 
@@ -157,8 +157,8 @@ public class YoungMan {
    &nbsp;&nbsp; 上图可拆分为以下几个体系:
 
    1.  **`Resource`体系  ： 对资源的抽象**
-   2.  **`Beandefinition` 体系  ： 抽象和描述一个具体`bean`对象。是描述一个`bean`对象的基本数据结构**
-   3.  **`BeandefinitionReader`体系  ： 将外部资源对象描述的`bean`定义统一转化为统一的内部数据结构`BeanDefinition`** 
+   2.  **`BeanDefinition` 体系  ： 抽象和描述一个具体`bean`对象。是描述一个`bean`对象的基本数据结构**
+   3.  **`BeanDefinitionReader`体系  ： 将外部资源对象描述的`bean`定义统一转化为统一的内部数据结构`BeanDefinition`** 
    4.  **`BeanFactory` 体系  ：  定义一个纯粹的 `bean` 容器，它是 `IoC`容器必备的数据结构**
    5.  **`ApplicationContext`体系  ： 继承 `BeanFactory`，它是 `BeanFactory` 的扩展升级版** 
    
