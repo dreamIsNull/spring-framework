@@ -36,7 +36,7 @@ if (mbd.isSingleton()) {
 			throw ex;
 		}
 	});
-    // <x>
+    // <x> 从 Bean 实例中获取对象
 	bean = getObjectForBeanInstance(sharedInstance, name, beanName, mbd);
 }
 ```

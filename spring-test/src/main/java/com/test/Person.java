@@ -15,6 +15,7 @@ public class Person {
 	private Person2 person2;
 
 	public Person() {
+		System.out.println("Person 默认构造");
 	}
 
 	public Person(Integer id, String name, Integer age, String birthday) {
@@ -22,6 +23,7 @@ public class Person {
 		this.name = name;
 		this.age = age;
 		this.birthday = birthday;
+		System.out.println("Person 带参数构造");
 	}
 
 	public Integer getId() {
