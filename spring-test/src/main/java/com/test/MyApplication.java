@@ -1,6 +1,6 @@
 package com.test;
 
-import org.springframework.beans.factory.BeanFactory;
+import com.test.car.Display;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -16,9 +16,12 @@ public class MyApplication {
 		Resource classPathResource = new FileSystemResource("H:/Code/study/spring-framework/spring-test/src/main/resources/beans.xml");
 //		Resource classPathResource2 = new FileSystemResource("H:/Code/study/spring-framework/spring-test/src/main/resources/beans2.xml");
 //		Resource classPathResource3 = new ClassPathResource("xml/beans.xml");
-		BeanFactory bf =new XmlBeanFactory(classPathResource);
+		XmlBeanFactory bf =new XmlBeanFactory(classPathResource);
 
 		Person person = bf.getBean("pee", Person.class);
+		Display display = bf.getBean("display", Display.class);
+		display.display();
+		bf.removeBeanDefinition("person");
 //		Person2 person2 = bf.getBean("person2", Person2.class);
 //		System.out.println(person2.getName2());
 //		System.out.println(person.getPerson2().getName2());

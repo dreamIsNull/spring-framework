@@ -1,10 +1,16 @@
 package com.test;
 
+import org.springframework.beans.BeansException;
+import org.springframework.beans.PropertyValues;
+import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
+
+import java.beans.PropertyDescriptor;
+
 /**
  * @author : Mr-Z
  * @date : 2020/07/06 22:51
  */
-public class Person {
+public class Person implements InstantiationAwareBeanPostProcessor {
 
 
 	private Integer id;
@@ -78,5 +84,28 @@ public class Person {
 
 	public void say(){
 		System.out.printf("My name is %s%n", name);
+	}
+
+
+	@Override
+	public Object postProcessBeforeInstantiation(Class <?> beanClass, String beanName) throws BeansException {
+		System.out.println("postProcessBeforeInstantiation");
+		return null;
+	}
+
+	@Override
+	public boolean postProcessAfterInstantiation(Object bean, String beanName) throws BeansException {
+		System.out.println("postProcessAfterInstantiation");
+		return false;
+	}
+
+	@Override
+	public PropertyValues postProcessPropertyValues(PropertyValues pvs, PropertyDescriptor[] pds, Object bean, String beanName) throws BeansException {
+		System.out.println("postProcessPropertyValues");
+		return null;
+	}
+
+	public void destory(){
+		System.out.println("destory");
 	}
 }

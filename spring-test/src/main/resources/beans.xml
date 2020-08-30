@@ -10,7 +10,14 @@
 		<property name="age2" value="17"/>
 	</bean>
 
-	<bean id="person" name="pe,pee" class="com.test.Person" scope="singleton">
+	<bean id="hongqi" class="com.test.car.Hongqi" />
+	<bean id="display" class="com.test.car.Display">
+		<lookup-method name="getCar" bean="hongqi"/>
+	</bean>
+
+	<bean id="display2" class="com.test.car.Display"/>
+
+	<bean id="person" name="pe,pee" class="com.test.Person" scope="singleton" destroy-method="destory">
 		<constructor-arg name="id" value="1" index="0"></constructor-arg>
 		<constructor-arg name="name" value="tom"></constructor-arg>
 		<constructor-arg name="birthday" value="2020-07-30"></constructor-arg>
