@@ -139,7 +139,7 @@ protected void populateBean(String beanName, RootBeanDefinition mbd, @Nullable B
 // org.springframework.beans.factory.support.AbstractBeanDefinition.java
 
 /**
- * 注入模式
+ * 注入模式(自动注入),默认不进行自动装配
  */
 private int autowireMode = AUTOWIRE_NO;
 
