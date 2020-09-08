@@ -2,15 +2,17 @@ package com.test;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.PropertyValues;
+import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
 
 import java.beans.PropertyDescriptor;
+import java.util.ArrayList;
 
 /**
  * @author : Mr-Z
  * @date : 2020/07/06 22:51
  */
-public class Person implements InstantiationAwareBeanPostProcessor {
+public class Person implements InstantiationAwareBeanPostProcessor, BeanPostProcessor {
 
 
 	private Integer id;
@@ -18,6 +20,15 @@ public class Person implements InstantiationAwareBeanPostProcessor {
 	private Integer age;
 	private String birthday;
 
+	private int aa;
+	private Integer bb;
+
+	private int[] aaL;
+	private Integer[] bbL;
+
+	private ArrayList <Object> list;
+
+	private Person2 person3;
 	private Person2 person2;
 
 	public Person() {
@@ -107,5 +118,67 @@ public class Person implements InstantiationAwareBeanPostProcessor {
 
 	public void destory(){
 		System.out.println("destory");
+	}
+
+
+	public int getAa() {
+		return aa;
+	}
+
+	public void setAa(int aa) {
+		this.aa = aa;
+	}
+
+	public Integer getBb() {
+		return bb;
+	}
+
+	public void setBb(Integer bb) {
+		this.bb = bb;
+	}
+
+	public int[] getAaL() {
+		return aaL;
+	}
+
+	public void setAaL(int[] aaL) {
+		this.aaL = aaL;
+	}
+
+	public Integer[] getBbL() {
+		return bbL;
+	}
+
+	public void setBbL(Integer[] bbL) {
+		this.bbL = bbL;
+	}
+
+	public ArrayList <Object> getList() {
+		return list;
+	}
+
+	public void setList(ArrayList <Object> list) {
+		this.list = list;
+	}
+
+	public Person2 getPerson3() {
+		return person3;
+	}
+
+	public void setPerson3(Person2 person3) {
+		this.person3 = person3;
+	}
+
+
+	@Override
+	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+		System.out.println("postProcessBeforeInitialization");
+		return null;
+	}
+
+	@Override
+	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+		System.out.println("postProcessAfterInitialization");
+		return null;
 	}
 }
