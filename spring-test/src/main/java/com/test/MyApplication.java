@@ -2,7 +2,6 @@ package com.test;
 
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -34,10 +33,10 @@ public class MyApplication {
 //		System.out.println(alternativeJdkIdGenerator.generateId());
 	}
 	public static void applicationContextTest() {
- 		new AnnotationConfigApplicationContext(Person.class);
+// 		new AnnotationConfigApplicationContext(Person.class);
 		ApplicationContext context = new ClassPathXmlApplicationContext("classpath*:/resources/beanFactory.xml");
-		Person person = context.getBean("person", Person.class);
-		System.out.println(person.getName());
+//		Person person = context.getBean("person", Person.class);
+//		System.out.println(person.getName());
 
 	}
 
