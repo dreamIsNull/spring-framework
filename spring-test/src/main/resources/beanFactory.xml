@@ -26,12 +26,23 @@
 		<constructor-arg name="name" value="tom"></constructor-arg>
 		<constructor-arg name="birthday" value="2020-07-30"></constructor-arg>
 		<constructor-arg name="age" value="1"></constructor-arg>
+		<constructor-arg name="date" value="2014-06-01 09:21:20"></constructor-arg>
 		<property name="id" value="1"/>
 		<property name="name" value="Java"/>
 		<property name="age" value="17"/>
 		<property name="birthday" value="2020-07-30"/>
 		<property name="person2" ref="person2" />
 	</bean>
+
+	<bean class="org.springframework.beans.factory.config.CustomEditorConfigurer">
+		<property name="customEditors">
+			<map>
+				<entry key="java.util.Date" value="com.test.edits.DateEditor"></entry>
+			</map>
+		</property>
+	</bean>
+<!--	<bean id="dateEditor" class="com.test.edits.DateEditor">
+	</bean>-->
 
 	<!--<myTag:user id="user" email="12233445566@qq.com" userName="chenssy"/>-->
 

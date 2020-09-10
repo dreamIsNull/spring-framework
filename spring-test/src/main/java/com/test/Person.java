@@ -7,6 +7,7 @@ import org.springframework.beans.factory.config.InstantiationAwareBeanPostProces
 
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * @author : Mr-Z
@@ -31,15 +32,18 @@ public class Person implements InstantiationAwareBeanPostProcessor, BeanPostProc
 	private Person2 person3;
 	private Person2 person2;
 
+	private Date date;
+
 	public Person() {
 		System.out.println("Person 默认构造");
 	}
 
-	public Person(Integer id, String name, Integer age, String birthday) {
+	public Person(Integer id, String name, Integer age, String birthday,Date date) {
 		this.id = id;
 		this.name = name;
 		this.age = age;
 		this.birthday = birthday;
+		this.date = date;
 		System.out.println("Person 带参数构造");
 	}
 
@@ -180,5 +184,13 @@ public class Person implements InstantiationAwareBeanPostProcessor, BeanPostProc
 	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
 		System.out.println("postProcessAfterInitialization");
 		return null;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
 	}
 }
