@@ -16,26 +16,8 @@
 
 package org.springframework.web.servlet;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -59,6 +41,13 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.util.NestedServletException;
 import org.springframework.web.util.WebUtils;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Central dispatcher for HTTP request handlers/controllers, e.g. for web UI controllers
@@ -495,14 +484,23 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * <p>May be overridden in subclasses in order to initialize further strategy objects.
 	 */
 	protected void initStrategies(ApplicationContext context) {
+		// 初始化 MultipartResolver
 		initMultipartResolver(context);
+		// 初始化 LocaleResolver
 		initLocaleResolver(context);
+		// 初始化 ThemeResolver
 		initThemeResolver(context);
+		// 初始化 HandlerMappings
 		initHandlerMappings(context);
+		// 初始化 HandlerAdapters
 		initHandlerAdapters(context);
+		// 初始化 HandlerExceptionResolvers
 		initHandlerExceptionResolvers(context);
+		// 初始化 RequestToViewNameTranslator
 		initRequestToViewNameTranslator(context);
+		// 初始化 ViewResolvers
 		initViewResolvers(context);
+		// 初始化 FlashMapManager
 		initFlashMapManager(context);
 	}
 
