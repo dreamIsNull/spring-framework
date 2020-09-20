@@ -16,10 +16,10 @@
 
 package org.springframework.web.servlet;
 
+import org.springframework.lang.Nullable;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.lang.Nullable;
 
 /**
  * MVC framework SPI, allowing parameterization of the core MVC workflow.
@@ -60,6 +60,9 @@ public interface HandlerAdapter {
 	 * @param handler handler object to check
 	 * @return whether or not this object can use the given handler
 	 */
+	/**
+	 * 是否支持该处理器
+	 */
 	boolean supports(Object handler);
 
 	/**
@@ -74,6 +77,9 @@ public interface HandlerAdapter {
 	 * @return ModelAndView object with the name of the view and the required
 	 * model data, or {@code null} if the request has been handled directly
 	 */
+	/**
+	 * 执行处理器，返回 ModelAndView 结果
+	 */
 	@Nullable
 	ModelAndView handle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception;
 
@@ -85,6 +91,11 @@ public interface HandlerAdapter {
 	 * @return the lastModified value for the given handler
 	 * @see javax.servlet.http.HttpServlet#getLastModified
 	 * @see org.springframework.web.servlet.mvc.LastModified#getLastModified
+	 */
+	/**
+	 * 返回请求的最新更新时间。
+	 *
+	 * 如果不支持该操作，则返回 -1 即可
 	 */
 	long getLastModified(HttpServletRequest request, Object handler);
 

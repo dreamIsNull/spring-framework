@@ -16,10 +16,10 @@
 
 package org.springframework.web.servlet;
 
+import org.springframework.lang.Nullable;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.lang.Nullable;
 
 /**
  * Interface to be implemented by objects that can resolve exceptions thrown during
@@ -48,6 +48,9 @@ public interface HandlerExceptionResolver {
 	 * @param ex the exception that got thrown during handler execution
 	 * @return a corresponding {@code ModelAndView} to forward to,
 	 * or {@code null} for default processing in the resolution chain
+	 */
+	/**
+	 * 解析异常，转换成对应的 ModelAndView 结果
 	 */
 	@Nullable
 	ModelAndView resolveException(

@@ -44,6 +44,14 @@ public class Person implements InstantiationAwareBeanPostProcessor, BeanPostProc
 		this.age = age;
 		this.birthday = birthday;
 		this.date = date;
+		System.out.println("Person 带参数构造(date)");
+	}
+
+	public Person(Integer id, String name,String birthday, Integer age) {
+		this.id = id;
+		this.name = name;
+		this.age = age;
+		this.birthday = birthday;
 		System.out.println("Person 带参数构造");
 	}
 

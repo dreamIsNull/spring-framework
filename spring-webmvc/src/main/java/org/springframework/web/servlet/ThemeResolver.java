@@ -16,10 +16,10 @@
 
 package org.springframework.web.servlet;
 
+import org.springframework.lang.Nullable;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.lang.Nullable;
 
 /**
  * Interface for web-based theme resolution strategies that allows for
@@ -54,6 +54,9 @@ public interface ThemeResolver {
 	 * @param request request to be used for resolution
 	 * @return the current theme name
 	 */
+	/**
+	 * 从请求中，解析出使用的主题。例如，从请求头 User-Agent ，判断使用 PC 端，还是移动端的主题
+	 */
 	String resolveThemeName(HttpServletRequest request);
 
 	/**
@@ -63,6 +66,9 @@ public interface ThemeResolver {
 	 * @param themeName the new theme name ({@code null} or empty to reset it)
 	 * @throws UnsupportedOperationException if the ThemeResolver implementation
 	 * does not support dynamic changing of the theme
+	 */
+	/**
+	 * 设置请求，所使用的主题。
 	 */
 	void setThemeName(HttpServletRequest request, @Nullable HttpServletResponse response, @Nullable String themeName);
 
