@@ -263,7 +263,7 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 		extendInterceptors(this.interceptors);
 		// <2> 扫描已注册的 MappedInterceptor 的 Bean 们，添加到 mappedInterceptors 中
 		detectMappedInterceptors(this.adaptedInterceptors);
-		// <3> 将 interceptors 初始化成 HandlerInterceptor 类型，添加到 mappedInterceptors 中
+		// <3> 将 interceptors 初始化成 HandlerInterceptor 类型，添加到 adaptedInterceptors 中
 		initInterceptors();
 	}
 
@@ -310,7 +310,7 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 					// 若为空，抛出 IllegalArgumentException 异常
 					throw new IllegalArgumentException("Entry number " + i + " in interceptors array is null");
 				}
-				// 将 interceptors 初始化成 HandlerInterceptor 类型，添加到 mappedInterceptors 中
+				// 将 interceptors 初始化成 HandlerInterceptor 类型，添加到 adaptedInterceptors 中
 				// 注意，HandlerInterceptor 无需进行路径匹配，直接拦截全部
 				this.adaptedInterceptors.add(adaptInterceptor(interceptor));
 			}
