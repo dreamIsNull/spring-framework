@@ -1,5 +1,10 @@
 package com.test;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+
 import java.io.IOException;
 
 /**
@@ -27,6 +32,7 @@ public class MyApplication {
 	public static void applicationContextTest() {
 // 		new AnnotationConfigApplicationContext(Person.class);
 //		ApplicationContext context = new ClassPathXmlApplicationContext("classpath*:/resources/beanFactory.xml");
+		ApplicationContext context = new ClassPathXmlApplicationContext("beanFactory.xml");
 //		Person person = context.getBean("person", Person.class);
 //		System.out.println(person.getName());
 
@@ -34,6 +40,8 @@ public class MyApplication {
 
 	public static void beanFactoryTest() {
 //		Resource classPathResource = new FileSystemResource("H:\\Code\\study\\spring-framework\\spring-test\\src\\main\\resources\\beanFactory.xml");
+//		Resource classPathResource = new FileSystemResource("H:\\Code\\study\\spring-framework\\spring-test\\src\\main\\resources\\beanFactory.xml");
+		Resource classPathResource = new FileSystemResource("beanFactory.xml");
 //		Resource classPathResource2 = new FileSystemResource("H:/Code/study/spring-framework/spring-test/src/main/resources/beans2.xml");
 //		Resource classPathResource3 = new ClassPathResource("xml/beanFactory.xml");
 //		XmlBeanFactory bf =new XmlBeanFactory(classPathResource);
